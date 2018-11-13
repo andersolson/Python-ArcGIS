@@ -25,7 +25,8 @@ ScratchGDB = arcpy.env.scratchGDB
 
 outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
-inSHP = parameters[0].valueAsText #Input shapefile that needs to be re-sorted
+inSHP = 777 #Input shapefile that needs to be re-sorted
+shpFields = ['tex','rose','betty','ted','angel'] #Input shapefile fields raw
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -36,8 +37,14 @@ inSHP = parameters[0].valueAsText #Input shapefile that needs to be re-sorted
 def someFunction():
     pass
 
+def alphabetize(rawLst):
+    return sorted(rawLst)
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
 # Start calling functions 
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+
+cleanLst = alphabetize(shpFields)
+outputMessage(cleanLst)
