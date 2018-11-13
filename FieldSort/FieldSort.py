@@ -25,6 +25,7 @@ arcpy.env.workspace = "in_memory"
 #outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
 inSHP = r'U:\AOLSON\Working\temp\system_valves.gdb\valves\SystemValves'#Input shapefile that needs to be re-sorted
+capitals = True
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -55,21 +56,55 @@ def storeFieldProperties(inShp):
         
         #Temporary list for storing properties
         tmpLst = []
-        
+
         #name variables to append to list
-        tmpLst.append(field.name)
-        tmpLst.append(field.aliasName)
-        tmpLst.append(field.baseName)
-        tmpLst.append(field.defaultValue)
-        tmpLst.append(field.domain)
-        tmpLst.append(field.editable)
-        tmpLst.append(field.isNullable)
-        tmpLst.append(field.length)
-        tmpLst.append(field.precision)
-        tmpLst.append(field.required)
-        tmpLst.append(field.scale)
-        tmpLst.append(field.type)
+        tmpLst.append(field.name)         #[0]    
+        tmpLst.append(field.aliasName)    #[1]
+        tmpLst.append(field.baseName)     #[2]
+        tmpLst.append(field.defaultValue) #[3]
+        tmpLst.append(field.domain)       #[4]
+        tmpLst.append(field.editable)     #[5]
+        tmpLst.append(field.isNullable)   #[6]
+        tmpLst.append(field.length)       #[7]
+        tmpLst.append(field.precision)    #[8]
+        tmpLst.append(field.required)     #[9]
+        tmpLst.append(field.scale)        #[10]
+        
+        #Fix the field.type to match field types for AddField_management 
+        if field.type == 'String':
+            tmpLst.append('TEXT')
+        elif field.type == 'Single':
+            tmpLst.append('FLOAT')        
+        elif field.type == 'Double':
+            tmpLst.append('DOUBLE')
+        elif field.type == 'SmallInteger':
+            tmpLst.append('SHORT')    
+        elif field.type == 'Integer':
+            tmpLst.append('LONG')     
+        elif field.type == 'Date':
+            tmpLst.append('DATE')
+        elif field.type == 'Blob':
+            tmpLst.append('BLOB')
+        elif field.type == 'Raster':
+            tmpLst.append('RASTER')   
+        elif field.type == 'Guid':
+            tmpLst.append('GUID')
+        else:
+            tmpLst.append(field.type)     #[11]
+        
         outLst.append(tmpLst)
+    
+    
+    #Delete any OID-type from the final list
+    for item in outLst:
+        if item[11] == 'OID': 
+            outLst.remove(item)
+    
+    #Delete any Geometry-type from the final list
+    for item in outLst:
+        if item[11] == 'Geometry':
+            outLst.remove(item)
+            
     
     return outLst
 
@@ -94,11 +129,23 @@ def addNewFields(inShp,inLst):
         #outputMessage(item)
         tmpCounter += 1
         
-        ## Add field named "tmp" to store attribute
-        #arcpy.AddField_management(inShp, tmpName,"TEXT","#","#","254",tmpName,"NULLABLE")
+        '''
+        outputMessage(item[11])
+        outputMessage(item[8])
+        outputMessage(item[10])
+        outputMessage(item[7])
+        outputMessage(item[1]) 
+        outputMessage(item[4])
+        '''
         
-        ## Calculate values for "tmp" from !stripDesc!
-        #arcpy.CalculateField_management(joinOut,"tmp","!stripDesc!","PYTHON_9.3","#")  
+        # Add field named "tmp#" to create a holding spot for new field order
+        arcpy.AddField_management(inShp, tmpName,"{0}".format(item[11]),"{0}".format(item[8]),
+                                  "{0}".format(item[10]),"{0}".format(item[7]),tmpName,
+                                  "NULLABLE","NON_REQUIRED","{0}".format(item[4]))
+        
+        # Calculate values for "tmp#" from the associated field
+        arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON3")  
+        
         ## Delete the original field 
         #arcpy.DeleteField_management(joinOut,"tmp")         
         ## Add field named with proper formating
@@ -119,7 +166,6 @@ inFieldNames -- Input a sorted list of field names. The field names should be
 Outputs:
 None -- The input shapefile has fields updated as the function runs through input list
 """
-
 def re_sortFieldOrder(inShp, inFieldNames):
     #Loop through field names in the list and update the shapefile
     for field in inFieldNames:
@@ -135,12 +181,3 @@ lstProperties = storeFieldProperties(inSHP)
 
 addNewFields(inSHP,lstProperties)
     
-'''
-# Get a list of all the field names found in the dataset
-fieldNames = [f.name for f in arcpy.ListFields(inSHP)]
-
-# Create an alphabetized list of the field names for a test
-sortedLst = sorted(fieldNames)
-
-re_sortFieldOrder(inSHP, sortedLst)
-'''
