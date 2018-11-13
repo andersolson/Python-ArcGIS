@@ -1,4 +1,5 @@
 import arcpy
+import sys
 
 def outputMessage(msg):
     #print(msg)
@@ -56,9 +57,15 @@ def storeFieldProperties(inShp):
         
         #Temporary list for storing properties
         tmpLst = []
+        
+        if capitals is True:
+            fName = field.name
+            fieldName = fName.upper()
+        else:
+            fieldName = field.name
 
         #name variables to append to list
-        tmpLst.append(field.name)         #[0]    
+        tmpLst.append(fieldName)         #[0]    
         tmpLst.append(field.aliasName)    #[1]
         tmpLst.append(field.baseName)     #[2]
         tmpLst.append(field.defaultValue) #[3]
@@ -105,7 +112,7 @@ def storeFieldProperties(inShp):
         if item[11] == 'Geometry':
             outLst.remove(item)
             
-    
+    #Output is a cleaned up list
     return outLst
 
 """
@@ -124,9 +131,8 @@ None -- The input shapefile has fields updated as the function runs through inpu
 def addNewFields(inShp,inLst):
     tmpCounter = 0
     for item in inLst:
+        outputMessage("Sorting field: {0}...".format(item[0]))
         tmpName = "tmp{0}".format(tmpCounter)
-        #outputMessage(tmpName)
-        #outputMessage(item)
         tmpCounter += 1
         
         '''
@@ -136,6 +142,7 @@ def addNewFields(inShp,inLst):
         outputMessage(item[7])
         outputMessage(item[1]) 
         outputMessage(item[4])
+        outputMessage(item[0])
         '''
         
         # Add field named "tmp#" to create a holding spot for new field order
@@ -144,16 +151,25 @@ def addNewFields(inShp,inLst):
                                   "NULLABLE","NON_REQUIRED","{0}".format(item[4]))
         
         # Calculate values for "tmp#" from the associated field
-        arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON3")  
+        arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON_9.3") 
         
-        ## Delete the original field 
-        #arcpy.DeleteField_management(joinOut,"tmp")         
-        ## Add field named with proper formating
-        #arcpy.AddField_management(joinOut,"CatID","TEXT","#","#","254","CatID","NULLABLE","NON_REQUIRED","#")    
-        ## Calculate values for "CatID" from !tmp!
-        #arcpy.CalculateField_management(joinOut,"CatID","!tmp!","PYTHON_9.3","#")    
-        ## Delete the temp field 
-        #arcpy.DeleteField_management(joinOut,"tmp")             
+        outputMessage("\t...Deleting field")
+        # Delete the original field 
+        arcpy.DeleteField_management(inShp,"{0}".format(item[0]))
+        
+        outputMessage("\t...Adding new field")
+        # Add field named with proper formating
+        arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[11]),"{0}".format(item[8]),
+                                  "{0}".format(item[10]),"{0}".format(item[7]),tmpName,
+                                  "NULLABLE","NON_REQUIRED","{0}".format(item[4]))   
+        
+        outputMessage("\t...Populating new field")
+        # Calculate values for the newly added field by 
+        arcpy.CalculateField_management(inShp,"{0}".format(item[0]),"!{0}!".format(tmpName),"PYTHON_9.3")    
+        
+        outputMessage("\t...Deleting temp field")
+        # Delete the temp field 
+        arcpy.DeleteField_management(inShp,tmpName)             
 
 """
 This function re-sorts the fields of an input shapefile to match a user defined sorting.
@@ -177,7 +193,16 @@ def re_sortFieldOrder(inShp, inFieldNames):
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-lstProperties = storeFieldProperties(inSHP)  
+lstProperties = storeFieldProperties(inSHP)
+#outputMessage(lstProperties)
 
-addNewFields(inSHP,lstProperties)
+#addNewFields(inSHP,lstProperties)
+
+outputMessage("Field sorting in progress...")
+try:
+    outputMessage("...")
+    addNewFields(inSHP,lstProperties)
+except:
+    outputError("Error encountered during field sort!")
+    sys.exit(".Process Terminated.")
     
