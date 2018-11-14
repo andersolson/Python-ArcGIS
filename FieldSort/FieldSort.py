@@ -28,6 +28,17 @@ arcpy.env.workspace = "in_memory"
 inSHP = r'U:\AOLSON\Working\temp\system_valves.gdb\valves\SystemValves'#Input shapefile that needs to be re-sorted
 capitals = True
 
+#================================#
+#Create a test list to simulate user input
+fields = arcpy.ListFields(inSHP)
+for field in fields:
+    tmpLst = []
+    fieldName = (field.name)
+    tmpLst.append(fieldName)
+userList = sorted(tmpLst)
+outputMessage(userList)
+#================================#
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
 # Define functions
