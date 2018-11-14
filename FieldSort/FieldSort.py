@@ -33,10 +33,11 @@ capitals = True
 testLst = []
 fields = arcpy.ListFields(inSHP)
 for field in fields:
-    fieldName = (field.name)
+    fName = field.name
+    fieldName = fName.upper()
     testLst.append(fieldName)
 userList = sorted(testLst)
-#outputMessage(userList)
+outputMessage(userList)
 #================================#
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
@@ -209,22 +210,6 @@ def re_sortFieldOrder(userLst, oldLst):
     #outputMessage(correctLst)
     return correctLst     
 
-"""
-This function re-sorts the fields of an input shapefile to match a user defined sorting.
-
-Inputs:
-inShp --
-
-Outputs:
-None -- 
-"""
-def capitalize():
-    if capitals is True:
-        fName = field.name
-        fieldName = fName.upper()
-    else:
-        fieldName = field.name    
-
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
 # Start calling functions 
@@ -236,12 +221,21 @@ outputMessage("Creating current field list...")
 lstProperties = storeFieldProperties(inSHP)
 #outputMessage(lstProperties)
 
-#Build a list of fields and their properties arranged the way 
-# the user wants them arranged.
-outputMessage("Creating user defined field list...")
-fixedLst = re_sortFieldOrder(userList, lstProperties)
-#outputMessage(fixedLst)
+if capitalize == True:
+    [x.upper() for x in lstProperties]
+    [x.upper() for x in userList]
+else:
+    pass
 
-outputMessage("Field sorting in progress...")
-addNewFields(inSHP,fixedLst)
+outputMessage(lstProperties)
+outputMessage(userList)
+
+##Build a list of fields and their properties arranged the way 
+## the user wants them arranged.
+#outputMessage("Creating user defined field list...")
+#fixedLst = re_sortFieldOrder(userList, lstProperties)
+##outputMessage(fixedLst)
+
+#outputMessage("Field sorting in progress...")
+#addNewFields(inSHP,fixedLst)
     
