@@ -59,20 +59,15 @@ def storeFieldProperties(inShp):
         tmpLst = []
         
         #name variables to append to list
-        tmpLst.append(fieldName)         #[0]    
+        tmpLst.append(field.name)         #[0]    
         tmpLst.append(field.aliasName)    #[1]
-        tmpLst.append(field.baseName)     #[2]
-        tmpLst.append(field.defaultValue) #[3]
         tmpLst.append(field.domain)       #[4]
-        tmpLst.append(field.editable)     #[5]
-        tmpLst.append(field.isNullable)   #[6]
         tmpLst.append(field.length)       #[7]
         tmpLst.append(field.precision)    #[8]
-        tmpLst.append(field.required)     #[9]
         tmpLst.append(field.scale)        #[10]
-        
+
         #Fix the field.type to match field types for AddField_management 
-        if field.type == 'String':
+        if field.type == 'String':        #[11]
             tmpLst.append('TEXT')
         elif field.type == 'Single':
             tmpLst.append('FLOAT')        
@@ -91,7 +86,7 @@ def storeFieldProperties(inShp):
         elif field.type == 'Guid':
             tmpLst.append('GUID')
         else:
-            tmpLst.append(field.type)     #[11]
+            tmpLst.append(field.type)     
         
         outLst.append(tmpLst)
     
@@ -128,16 +123,6 @@ def addNewFields(inShp,inLst):
         outputMessage("Sorting field: {0}...".format(item[0]))
         tmpName = "tmp{0}".format(tmpCounter)
         tmpCounter += 1
-        
-        '''
-        outputMessage(item[11])
-        outputMessage(item[8])
-        outputMessage(item[10])
-        outputMessage(item[7])
-        outputMessage(item[1]) 
-        outputMessage(item[4])
-        outputMessage(item[0])
-        '''
         
         # Add field named "tmp#" to create a holding spot for new field order
         arcpy.AddField_management(inShp, tmpName,"{0}".format(item[11]),"{0}".format(item[8]),
