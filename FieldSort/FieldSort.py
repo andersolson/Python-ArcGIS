@@ -59,15 +59,15 @@ def storeFieldProperties(inShp):
         tmpLst = []
         
         #name variables to append to list
-        tmpLst.append(field.name)         #[0]    
-        tmpLst.append(field.aliasName)    #[1]
-        tmpLst.append(field.domain)       #[4]
-        tmpLst.append(field.length)       #[7]
-        tmpLst.append(field.precision)    #[8]
-        tmpLst.append(field.scale)        #[10]
+        tmpLst.append(field.name)         #[0] [0]    
+        tmpLst.append(field.aliasName)    #[1] [1]
+        tmpLst.append(field.domain)       #[4] [2]
+        tmpLst.append(field.length)       #[7] [3]
+        tmpLst.append(field.precision)    #[8] [4]
+        tmpLst.append(field.scale)        #[10] [5]
 
         #Fix the field.type to match field types for AddField_management 
-        if field.type == 'String':        #[11]
+        if field.type == 'String':        #[11] [6]
             tmpLst.append('TEXT')
         elif field.type == 'Single':
             tmpLst.append('FLOAT')        
@@ -89,8 +89,7 @@ def storeFieldProperties(inShp):
             tmpLst.append(field.type)     
         
         outLst.append(tmpLst)
-    
-    
+
     #Delete any OID-type from the final list
     for item in outLst:
         if item[11] == 'OID': 
@@ -125,9 +124,9 @@ def addNewFields(inShp,inLst):
         tmpCounter += 1
         
         # Add field named "tmp#" to create a holding spot for new field order
-        arcpy.AddField_management(inShp, tmpName,"{0}".format(item[11]),"{0}".format(item[8]),
-                                  "{0}".format(item[10]),"{0}".format(item[7]),tmpName,
-                                  "NULLABLE","NON_REQUIRED","{0}".format(item[4]))
+        arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
+                                  "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                  "NULLABLE","NON_REQUIRED","{0}".format(item[2]))
         
         # Calculate values for "tmp#" from the associated field
         arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON_9.3") 
@@ -137,10 +136,10 @@ def addNewFields(inShp,inLst):
         arcpy.DeleteField_management(inShp,"{0}".format(item[0]))
         
         outputMessage("\t...Adding new field")
-        # Add field named with proper formating
-        arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[11]),"{0}".format(item[8]),
-                                  "{0}".format(item[10]),"{0}".format(item[7]),tmpName,
-                                  "NULLABLE","NON_REQUIRED","{0}".format(item[4]))   
+        # Add field with the new name and with proper formating
+        arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
+                                  "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                  "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
         
         outputMessage("\t...Populating new field")
         # Calculate values for the newly added field by 
