@@ -243,10 +243,5 @@ fixedLst = re_sortFieldOrder(userList, lstProperties)
 #outputMessage(fixedLst)
 
 outputMessage("Field sorting in progress...")
-try:
-    outputMessage("...")
-    addNewFields(inSHP,fixedLst)
-except:
-    outputError("Error encountered during field sort!")
-    sys.exit(".Process Terminated.")
+addNewFields(inSHP,fixedLst)
     
