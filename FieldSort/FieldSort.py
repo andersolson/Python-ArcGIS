@@ -59,15 +59,15 @@ def storeFieldProperties(inShp):
         tmpLst = []
         
         #name variables to append to list
-        tmpLst.append(field.name)         #[0] [0]    
-        tmpLst.append(field.aliasName)    #[1] [1]
-        tmpLst.append(field.domain)       #[4] [2]
-        tmpLst.append(field.length)       #[7] [3]
-        tmpLst.append(field.precision)    #[8] [4]
-        tmpLst.append(field.scale)        #[10] [5]
+        tmpLst.append(field.name)         #[0]    
+        tmpLst.append(field.aliasName)    #[1]
+        tmpLst.append(field.domain)       #[2]
+        tmpLst.append(field.length)       #[3]
+        tmpLst.append(field.precision)    #[4]
+        tmpLst.append(field.scale)        #[5]
 
         #Fix the field.type to match field types for AddField_management 
-        if field.type == 'String':        #[11] [6]
+        if field.type == 'String':        #[6]
             tmpLst.append('TEXT')
         elif field.type == 'Single':
             tmpLst.append('FLOAT')        
@@ -92,12 +92,12 @@ def storeFieldProperties(inShp):
 
     #Delete any OID-type from the final list
     for item in outLst:
-        if item[11] == 'OID': 
+        if item[6] == 'OID': 
             outLst.remove(item)
     
     #Delete any Geometry-type from the final list
     for item in outLst:
-        if item[11] == 'Geometry':
+        if item[6] == 'Geometry':
             outLst.remove(item)
             
     #Output is a cleaned up list
