@@ -30,13 +30,13 @@ capitals = True
 
 #================================#
 #Create a test list to simulate user input
+testLst = []
 fields = arcpy.ListFields(inSHP)
 for field in fields:
-    tmpLst = []
     fieldName = (field.name)
-    tmpLst.append(fieldName)
-userList = sorted(tmpLst)
-outputMessage(userList)
+    testLst.append(fieldName)
+userList = sorted(testLst)
+#outputMessage(userList)
 #================================#
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
@@ -136,7 +136,7 @@ def addNewFields(inShp,inLst):
         
         # Add field named "tmp#" to create a holding spot for new field order
         arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
-                                  "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                  "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
                                   "NULLABLE","NON_REQUIRED","{0}".format(item[2]))
         
         # Calculate values for "tmp#" from the associated field
@@ -161,20 +161,55 @@ def addNewFields(inShp,inLst):
         arcpy.DeleteField_management(inShp,tmpName)             
 
 """
-This function re-sorts the fields of an input shapefile to match a user defined sorting.
+This function re-sorts the fields of an input list to match a user defined sorting.
 
 Inputs:
-inShp -- Input shapefile that will have fields re-sorted
-inFieldNames -- Input a sorted list of field names. The field names should be
-                sorted the way the user wants their stuff sorted.
-
+userLst -- Input is a list of the field names arranged in the order that 
+           the user wants them changed
+oldLst  -- Input is the list result from storeFieldProperties(). This is the list of fields
+           and their properties as-is before any changes
 Outputs:
-None -- The input shapefile has fields updated as the function runs through input list
+correctLst -- The output list is a corrected list of fields and their properties arranged
+              in the order that the user wants them disaplayed.
 """
-def re_sortFieldOrder(inShp, inFieldNames):
-    #Loop through field names in the list and update the shapefile
-    for field in inFieldNames:
-        outputMessage(field)
+def re_sortFieldOrder(userLst, oldLst):
+    
+    correctLst = []
+    
+    for field in userLst:
+        tmpLst = []
+        outputMessage("Processing Field: {0}".format(field))
+        
+        #Loop through the old list and arrange a new list the way the user wants it arranged
+        fName       = [oldLst[x][0] for x in range(len(oldLst)) if oldLst[x][0] == field] 
+        fAlias      = [oldLst[x][1] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        fDomain     = [oldLst[x][2] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        fLength     = [oldLst[x][3] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        fPrecision  = [oldLst[x][4] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        fScale      = [oldLst[x][5] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        fType       = [oldLst[x][6] for x in range(len(oldLst)) if oldLst[x][0] == field]
+        #outputMessage("{0}-{1}-{2}-{3}-{4}-{5}-{6}".format(fName,fAlias,fDomain,fLength,fPrecision,fScale,fType))
+        
+        #Try to append the index content to another list, skip any fields that are 
+        #empty or do not match the desired pattern
+        try:
+            #Append to temp list
+            tmpLst.append(fName[0])
+            tmpLst.append(fAlias[0])
+            tmpLst.append(fDomain[0])
+            tmpLst.append(fLength[0])
+            tmpLst.append(fPrecision[0])
+            tmpLst.append(fScale[0])
+            tmpLst.append(fType[0])
+            #Append to the corrected list
+            correctLst.append(tmpLst)
+        except:
+            pass
+    
+    #outputMessage(correctLst)
+    return correctLst
+        
+        
 
 """
 This function re-sorts the fields of an input shapefile to match a user defined sorting.
@@ -203,11 +238,13 @@ lstProperties = storeFieldProperties(inSHP)
 
 #addNewFields(inSHP,lstProperties)
 
-outputMessage("Field sorting in progress...")
-try:
-    outputMessage("...")
-    addNewFields(inSHP,lstProperties)
-except:
-    outputError("Error encountered during field sort!")
-    sys.exit(".Process Terminated.")
+re_sortFieldOrder(userList, lstProperties)
+
+#outputMessage("Field sorting in progress...")
+#try:
+    #outputMessage("...")
+    #addNewFields(inSHP,lstProperties)
+#except:
+    #outputError("Error encountered during field sort!")
+    #sys.exit(".Process Terminated.")
     
