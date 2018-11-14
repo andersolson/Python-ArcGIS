@@ -58,12 +58,6 @@ def storeFieldProperties(inShp):
         #Temporary list for storing properties
         tmpLst = []
         
-        if capitals is True:
-            fName = field.name
-            fieldName = fName.upper()
-        else:
-            fieldName = field.name
-
         #name variables to append to list
         tmpLst.append(fieldName)         #[0]    
         tmpLst.append(field.aliasName)    #[1]
@@ -186,6 +180,22 @@ def re_sortFieldOrder(inShp, inFieldNames):
     #Loop through field names in the list and update the shapefile
     for field in inFieldNames:
         outputMessage(field)
+
+"""
+This function re-sorts the fields of an input shapefile to match a user defined sorting.
+
+Inputs:
+inShp --
+
+Outputs:
+None -- 
+"""
+def capitalize():
+    if capitals is True:
+        fName = field.name
+        fieldName = fName.upper()
+    else:
+        fieldName = field.name    
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
