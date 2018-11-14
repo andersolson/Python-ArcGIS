@@ -178,7 +178,7 @@ def re_sortFieldOrder(userLst, oldLst):
     
     for field in userLst:
         tmpLst = []
-        outputMessage("Processing Field: {0}".format(field))
+        #outputMessage("Processing Field: {0}".format(field))
         
         #Loop through the old list and arrange a new list the way the user wants it arranged
         fName       = [oldLst[x][0] for x in range(len(oldLst)) if oldLst[x][0] == field] 
@@ -207,9 +207,7 @@ def re_sortFieldOrder(userLst, oldLst):
             pass
     
     #outputMessage(correctLst)
-    return correctLst
-        
-        
+    return correctLst     
 
 """
 This function re-sorts the fields of an input shapefile to match a user defined sorting.
@@ -233,18 +231,22 @@ def capitalize():
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
+#Build a list of fields and their properties as they exist now
+outputMessage("Creating current field list...")
 lstProperties = storeFieldProperties(inSHP)
 #outputMessage(lstProperties)
 
-#addNewFields(inSHP,lstProperties)
+#Build a list of fields and their properties arranged the way 
+# the user wants them arranged.
+outputMessage("Creating user defined field list...")
+fixedLst = re_sortFieldOrder(userList, lstProperties)
+#outputMessage(fixedLst)
 
-re_sortFieldOrder(userList, lstProperties)
-
-#outputMessage("Field sorting in progress...")
-#try:
-    #outputMessage("...")
-    #addNewFields(inSHP,lstProperties)
-#except:
-    #outputError("Error encountered during field sort!")
-    #sys.exit(".Process Terminated.")
+outputMessage("Field sorting in progress...")
+try:
+    outputMessage("...")
+    addNewFields(inSHP,fixedLst)
+except:
+    outputError("Error encountered during field sort!")
+    sys.exit(".Process Terminated.")
     
