@@ -28,9 +28,9 @@ arcpy.env.workspace = "in_memory"
 inSHP = r'U:\AOLSON\Working\temp\Working.gdb\features\ParksJoin'#Input shapefile that needs to be re-sorted
 userList = ['OBJECTID','ID','ASSETID','Location','PARK_NAME','CATEGORY','DISTRICT','Sub_District','ADDRESS',
             'INTERSECTION','ACRES','IRRIGATED_ACRES','Native_Acres','Fertilized_acres','Irrigation_System',
-            'INSTALLYEAR','STATUS','OwnedBy','MAINTBY','MAINTAINEDBY','RECJURIS','LEGACYID','WARRANTYDATE',
+            'InstallYear','STATUS','OwnedBy','MAINTBY','MAINTAINEDBY','RECJURIS','LEGACYID','WARRANTYDATE',
             'CWCONDITION','CONDITIONDATE','SOURCE','COMMENTS','NOTE','JOB_NUM','PROJ_NUM','IRRIGATIONPLANS',
-            'InstallYear','created_user','created_date','last_edited_user','last_edited_date']
+            'created_user','created_date','last_edited_user','last_edited_date']
 capitalize = True
 
 #================================#
