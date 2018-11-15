@@ -34,8 +34,7 @@ testLst = []
 fields = arcpy.ListFields(inSHP)
 for field in fields:
     fName = field.name
-    fieldName = fName.upper()
-    testLst.append(str(fieldName))
+    testLst.append(fName)
 userList = sorted(testLst)
 #outputMessage(userList)
 #================================#
@@ -138,10 +137,7 @@ def addNewFields(inShp,inLst,flag):
             
             lowerName = item[0]
             upperName = lowerName.upper()
-            outputMessage(upperName)
-            
-            
-            '''
+
             # Add field named "tmp#" to create a holding spot for new field order
             arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
                                       "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
@@ -156,8 +152,8 @@ def addNewFields(inShp,inLst,flag):
             
             outputMessage("\t...Adding new field")
             # Add field with the new name and with proper formating
-            arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
-                                      "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+            arcpy.AddField_management(inShp, upperName,"{0}".format(item[6]),"{0}".format(item[4]),
+                                      "{0}".format(item[5]),"{0}".format(item[3]),upperName,
                                       "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
             
             outputMessage("\t...Populating new field")
@@ -166,8 +162,7 @@ def addNewFields(inShp,inLst,flag):
             
             outputMessage("\t...Deleting temp field")
             # Delete the temp field 
-            arcpy.DeleteField_management(inShp,tmpName)   
-            '''
+            arcpy.DeleteField_management(inShp,tmpName)
             
     else:
         tmpCounter = 0
@@ -191,7 +186,7 @@ def addNewFields(inShp,inLst,flag):
             outputMessage("\t...Adding new field")
             # Add field with the new name and with proper formating
             arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
-                                      "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                      "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
                                       "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
             
             outputMessage("\t...Populating new field")
