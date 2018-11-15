@@ -25,18 +25,23 @@ arcpy.env.workspace = "in_memory"
 #ScratchGDB = arcpy.env.scratchGDB
 #outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
-inSHP = r'U:\AOLSON\Working\temp\system_valves.gdb\valves\SystemValves'#Input shapefile that needs to be re-sorted
+inSHP = r'U:\AOLSON\Working\temp\Working.gdb\features\ParksJoin'#Input shapefile that needs to be re-sorted
+userList = ['OBJECTID','ASSETID','Location','PARK_NAME','CATEGORY','DISTRICT','Sub_District','ADDRESS',
+            'INTERSECTION','ACRES','IRRIGATED_ACRES','Native_Acres','Fertilized_acres','Irrigation_System',
+            'INSTALLYEAR','STATUS','OwnedBy','MAINTBY','MAINTAINEDBY','RECJURIS','LEGACYID','WARRANTYDATE',
+            'CWCONDITION','CONDITIONDATE','SOURCE','COMMENTS','NOTE','JOB_NUM','PROJ_NUM','IRRIGATIONPLANS',
+            'created_user','created_date','last_edited_user','last_editor_date']
 capitalize = True
 
 #================================#
-#Create a test list to simulate user input
-testLst = []
-fields = arcpy.ListFields(inSHP)
-for field in fields:
-    fName = field.name
-    testLst.append(fName)
-userList = sorted(testLst)
-#outputMessage(userList)
+##Create a test list to simulate user input
+#testLst = []
+#fields = arcpy.ListFields(inSHP)
+#for field in fields:
+    #fName = field.name
+    #testLst.append(fName)
+#userList = sorted(testLst)
+##outputMessage(userList)
 #================================#
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
