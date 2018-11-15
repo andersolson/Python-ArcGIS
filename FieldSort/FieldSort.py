@@ -26,7 +26,7 @@ arcpy.env.workspace = "in_memory"
 #outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
 inSHP = r'U:\AOLSON\Working\temp\system_valves.gdb\valves\SystemValves'#Input shapefile that needs to be re-sorted
-capitals = True
+capitalize = True
 
 #================================#
 #Create a test list to simulate user input
@@ -35,9 +35,9 @@ fields = arcpy.ListFields(inSHP)
 for field in fields:
     fName = field.name
     fieldName = fName.upper()
-    testLst.append(fieldName)
+    testLst.append(str(fieldName))
 userList = sorted(testLst)
-outputMessage(userList)
+#outputMessage(userList)
 #================================#
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
@@ -128,38 +128,79 @@ inLst -- Input the "field-properties-list" result from the storeFieldProperties(
 Outputs:
 None -- The input shapefile has fields updated as the function runs through input list
 """
-def addNewFields(inShp,inLst):
-    tmpCounter = 0
-    for item in inLst:
-        outputMessage("Sorting field: {0}...".format(item[0]))
-        tmpName = "tmp{0}".format(tmpCounter)
-        tmpCounter += 1
-        
-        # Add field named "tmp#" to create a holding spot for new field order
-        arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
-                                  "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
-                                  "NULLABLE","NON_REQUIRED","{0}".format(item[2]))
-        
-        # Calculate values for "tmp#" from the associated field
-        arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON_9.3") 
-        
-        outputMessage("\t...Deleting field")
-        # Delete the original field 
-        arcpy.DeleteField_management(inShp,"{0}".format(item[0]))
-        
-        outputMessage("\t...Adding new field")
-        # Add field with the new name and with proper formating
-        arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
-                                  "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
-                                  "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
-        
-        outputMessage("\t...Populating new field")
-        # Calculate values for the newly added field by 
-        arcpy.CalculateField_management(inShp,"{0}".format(item[0]),"!{0}!".format(tmpName),"PYTHON_9.3")    
-        
-        outputMessage("\t...Deleting temp field")
-        # Delete the temp field 
-        arcpy.DeleteField_management(inShp,tmpName)             
+def addNewFields(inShp,inLst,flag):
+    if flag == True:
+        tmpCounter = 0
+        for item in inLst:
+            outputMessage("Sorting field: {0}...".format(item[0]))
+            tmpName = "tmp{0}".format(tmpCounter)
+            tmpCounter += 1
+            
+            lowerName = item[0]
+            upperName = lowerName.upper()
+            outputMessage(upperName)
+            
+            
+            '''
+            # Add field named "tmp#" to create a holding spot for new field order
+            arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
+                                      "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
+                                      "NULLABLE","NON_REQUIRED","{0}".format(item[2]))
+            
+            # Calculate values for "tmp#" from the associated field
+            arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON_9.3") 
+            
+            outputMessage("\t...Deleting field")
+            # Delete the original field 
+            arcpy.DeleteField_management(inShp,"{0}".format(item[0]))
+            
+            outputMessage("\t...Adding new field")
+            # Add field with the new name and with proper formating
+            arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
+                                      "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                      "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
+            
+            outputMessage("\t...Populating new field")
+            # Calculate values for the newly added field by 
+            arcpy.CalculateField_management(inShp,"{0}".format(item[0]),"!{0}!".format(tmpName),"PYTHON_9.3")    
+            
+            outputMessage("\t...Deleting temp field")
+            # Delete the temp field 
+            arcpy.DeleteField_management(inShp,tmpName)   
+            '''
+            
+    else:
+        tmpCounter = 0
+        for item in inLst:
+            outputMessage("Sorting field: {0}...".format(item[0]))
+            tmpName = "tmp{0}".format(tmpCounter)
+            tmpCounter += 1
+            
+            # Add field named "tmp#" to create a holding spot for new field order
+            arcpy.AddField_management(inShp, tmpName,"{0}".format(item[6]),"{0}".format(item[4]),
+                                      "{0}".format(item[5]),"{0}".format(item[3]),"{0}".format(item[0]),
+                                      "NULLABLE","NON_REQUIRED","{0}".format(item[2]))
+            
+            # Calculate values for "tmp#" from the associated field
+            arcpy.CalculateField_management(inShp,tmpName,"!{0}!".format(item[0]),"PYTHON_9.3") 
+            
+            outputMessage("\t...Deleting field")
+            # Delete the original field 
+            arcpy.DeleteField_management(inShp,"{0}".format(item[0]))
+            
+            outputMessage("\t...Adding new field")
+            # Add field with the new name and with proper formating
+            arcpy.AddField_management(inShp, "{0}".format(item[0]),"{0}".format(item[6]),"{0}".format(item[4]),
+                                      "{0}".format(item[5]),"{0}".format(item[3]),tmpName,
+                                      "NULLABLE","NON_REQUIRED","{0}".format(item[2]))   
+            
+            outputMessage("\t...Populating new field")
+            # Calculate values for the newly added field by 
+            arcpy.CalculateField_management(inShp,"{0}".format(item[0]),"!{0}!".format(tmpName),"PYTHON_9.3")    
+            
+            outputMessage("\t...Deleting temp field")
+            # Delete the temp field 
+            arcpy.DeleteField_management(inShp,tmpName)             
 
 """
 This function re-sorts the fields of an input list to match a user defined sorting.
@@ -221,21 +262,12 @@ outputMessage("Creating current field list...")
 lstProperties = storeFieldProperties(inSHP)
 #outputMessage(lstProperties)
 
-if capitalize == True:
-    [x.upper() for x in lstProperties]
-    [x.upper() for x in userList]
-else:
-    pass
+#Build a list of fields and their properties arranged the way 
+# the user wants them arranged.
+outputMessage("Creating user defined field list...")
+fixedLst = re_sortFieldOrder(userList, lstProperties)
+#outputMessage(fixedLst)
 
-outputMessage(lstProperties)
-outputMessage(userList)
-
-##Build a list of fields and their properties arranged the way 
-## the user wants them arranged.
-#outputMessage("Creating user defined field list...")
-#fixedLst = re_sortFieldOrder(userList, lstProperties)
-##outputMessage(fixedLst)
-
-#outputMessage("Field sorting in progress...")
-#addNewFields(inSHP,fixedLst)
+outputMessage("Field sorting in progress...")
+addNewFields(inSHP,fixedLst,capitalize)
     
