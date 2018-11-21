@@ -257,6 +257,9 @@ def re_sortFieldOrder(userLst, oldLst):
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
+#Create a new empty feature class in the desired database
+
+
 #Build a list of fields and their properties as they exist now
 outputMessage("Creating current field list...")
 lstProperties = storeFieldProperties(inSHP)
