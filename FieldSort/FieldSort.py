@@ -25,6 +25,7 @@ arcpy.env.workspace = "in_memory"
 #ScratchGDB = arcpy.env.scratchGDB
 #outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
+workingGDB = r'U:\AOLSON\Working\temp\Working.gdb\features'
 inSHP = r'U:\AOLSON\Working\temp\Working.gdb\features\ParksJoin'#Input shapefile that needs to be re-sorted
 userList = ['OBJECTID','ID','ASSETID','Location','PARK_NAME','CATEGORY','DISTRICT','Sub_District','InstallYear',
             'ADDRESS','INTERSECTION','ACRES','IRRIGATED_ACRES','Native_Acres','Fertilized_acres','Irrigation_System',
@@ -258,7 +259,7 @@ def re_sortFieldOrder(userLst, oldLst):
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
 #Create a new empty feature class in the desired database
-
+arcpy.CreateFeatureclass_management(workingGDB,"NewShp","POLYGON","","DISABLED","DISABLED",inSHP)
 
 #Build a list of fields and their properties as they exist now
 outputMessage("Creating current field list...")
@@ -272,5 +273,6 @@ fixedLst = re_sortFieldOrder(userList, lstProperties)
 #outputMessage(fixedLst)
 
 outputMessage("Field sorting in progress...")
-addNewFields(inSHP,fixedLst,capitalize)
+#addNewFields(inSHP,fixedLst,capitalize)
+addNewFields("U:\\AOLSON\\Working\\temp\\Working.gdb\\features\\NewShp",fixedLst,capitalize)
     
