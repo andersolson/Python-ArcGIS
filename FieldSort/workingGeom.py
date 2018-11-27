@@ -34,17 +34,6 @@ userList = ['OBJECTID','ID','ASSETID','Location','PARK_NAME','CATEGORY','DISTRIC
             'created_date','last_edited_user','last_edited_date']
 capitalize = True
 
-#================================#
-##Create a test list to simulate user input
-#testLst = []
-#fields = arcpy.ListFields(inSHP)
-#for field in fields:
-    #fName = field.name
-    #testLst.append(fName)
-#userList = sorted(testLst)
-##outputMessage(userList)
-#================================#
-
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
 # Define functions
