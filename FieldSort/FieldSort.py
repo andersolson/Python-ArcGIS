@@ -25,7 +25,7 @@ arcpy.env.workspace = "in_memory"
 #ScratchGDB = arcpy.env.scratchGDB
 #outputMessage("Scratch folder is: {}".format(ScratchGDB))        
 
-inSHP = r'U:\AOLSON\Working\temp\Working.gdb\features\ParksJoin'#Input shapefile that needs to be re-sorted
+inSHP = r'U:\AOLSON\Working\ParksFields\fieldSwitch.gdb\Parks0'#Input shapefile that needs to be re-sorted
 userList = ['OBJECTID','ID','ASSETID','Location','PARK_NAME','CATEGORY','DISTRICT','Sub_District','InstallYear',
             'ADDRESS','INTERSECTION','ACRES','IRRIGATED_ACRES','Native_Acres','Fertilized_acres','Irrigation_System',
             'STATUS','OwnedBy','MAINTBY','MAINTAINEDBY','RECJURIS','LEGACYID','WARRANTYDATE','CWCONDITION',
