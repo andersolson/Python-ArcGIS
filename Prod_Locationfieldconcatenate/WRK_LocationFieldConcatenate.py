@@ -18,7 +18,8 @@ formatter = logging.Formatter('%(asctime)s - %(filename)s : line %(lineno)d - %(
 fh.setFormatter(formatter)
 logger.addHandler(fh)
 
-#Codeblock for ssGravityMain Concatenate
+#Codeblock for ssGravityMain Concatenate: 
+# Row-by-row populate the LOCATION field with with the ASSETGOUP and TROUBLESPOT attributes.
 codeblock = """
 def loc_concat(ASSETGROUP,TROUBLESPOT):
         if TROUBLESPOT is None:
@@ -27,14 +28,15 @@ def loc_concat(ASSETGROUP,TROUBLESPOT):
 
 try:
         #Set the workspace
-        logger.info("Set The workspace")
+        logger.info("Set workspace environemnt")
         arcpy.env.workspace = "C:\\ScriptsForArcGIS\\OPERATIONS - DEFAULT.sde"
 
         #Set a variable for the workspace
-        logger.info("Set a variable for the workspace")
+        logger.info("Set workspace environemnt as a variable")
         workspace = arcpy.env.workspace
 
-        #Concatenate for "Location" field using "AssetGroup" and "TroubleSpot"     
+        #Concatenate for "Location" field using "AssetGroup" and "TroubleSpot" 
+        logger.info("Run concatenate for ssGravityMain LOCATION field")
         arcpy.CalculateField_management("ssGravityMain", "LOCATION", "loc_concat(!ASSETGROUP!,!TROUBLESPOT!)", "PYTHON_9.3", codeblock)
 
 except Exception as e:
