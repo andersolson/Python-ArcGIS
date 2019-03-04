@@ -92,14 +92,9 @@ swNetworkStructure = gdb + '\swNetworkStructure'
 #storm_ds = sde + '\OPERATIONS.OPS.STORM_NETWORK'
 #datasets = [water_ds, sewer_ds, storm_ds]
 
-swNetworkStructureFlds = ['OBJECTID','NODETYPE','STATUS','STORMSYSTEM','SYMBOLOGY']
-swNetworkStructureLST  = []
-
+swNetworkStructureFlds = ['NODETYPE','STATUS','STORMSYSTEM','SYMBOLOGY']
 wSystemValveFlds       = []
-wSystemValveLST        = []
-
 wControlValveFlds      = []
-wControlValveLST       = []
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -107,49 +102,39 @@ wControlValveLST       = []
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 '''
-Make a nested list of desired fields and their attributes using feature class input and a list of 
-desired fields for the output nested list. Nested list is used
+Concatnate 3 fields and update SYMBOLOGY field
 
 Inputs:
-inFC -- Feature class input for Water, Wastewater, or Storm Water. e.g. wSystemValve, wControlValve, wNetworkStructure
-inFieldNames -- The desired fields to use in concatnate function to populate the symbology field.
+inFC -- Feature class input for Water, Wastewater, or Storm Water datasets. e.g. wSystemValve, wControlValve, wNetworkStructure
+fieldsList -- 
 
 Outputs:
-outNstLst -- Output is a nested list that stores all the attribute field info for the input feature class.
+output -- 
 
 '''
-def buildNestedLst(inFC, inFieldNames, outNstLst):
-    
-    outputMessage("Running Build Nested List for {}...".format(inFC))
-    
-    for row in arcpy.da.SearchCursor(inFC, inFieldNames):
-        
-        # Create a temporary list for storing field values and then appending to 
-        # nested list.
-        #
-        tmpLst = []
-        tmpLst.append(row[0])
-        tmpLst.append(row[1])
-        tmpLst.append(row[2])
-        tmpLst.append(row[3])
-        tmpLst.append(row[4])
-    
-        outNstLst.append(tmpLst)
-    
-    outputMessage("Build Nested List Completed for {}".format(inFC))
-    
-buildNestedLst(swNetworkStructure, swNetworkStructureFlds, swNetworkStructureLST) 
+def calculateSymbology(inFC, fieldsList):
+    #Use update cursor to update any new or changed records in the inFC 
+    with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor:
+        for row in cursor:
+            symbol = "{}, {}, {}".format(row[0], row[1], row[2])
+            
+            #calc the symbology field if it doesn't match other fields
+            if symbol != row[3]:
+                row[3] = symbol
+                
+                #update the row
+                cursor.updateRow(row)
+                
+            else:
+                pass
 
-outputMessage(swNetworkStructureLST)
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
+#================================#
+# Call Functions
+#================================# 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+
+calculateSymbology()
 
 logging.shutdown()
 
-#Use cursor to update any new or changed records in swPipeEnd 
-with arcpy.da.UpdateCursor("OPERATIONS.OPS.swPipeEnd", ["STATUS", "STORMSYSTEM", "SERVICESYMBOLOGY"]) as cursor:
-    for row in cursor:
-        symbol = "{}, {}".format(row[0], row[1])
-        #calc servicesymbology field if it doesn't match other fields
-        if symbol != row[2]:
-            row[2] = symbol
-        else: continue
-        cursor.updateRow(row)
