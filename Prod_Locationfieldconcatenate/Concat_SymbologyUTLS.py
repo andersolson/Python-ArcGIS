@@ -102,14 +102,14 @@ wControlValveFlds      = []
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 '''
-Concatnate 3 fields and update SYMBOLOGY field
+Concatnate 3 fields into the SYMBOLOGY field for input feature classes
 
 Inputs:
 inFC -- Feature class input for Water, Wastewater, or Storm Water datasets. e.g. wSystemValve, wControlValve, wNetworkStructure
-fieldsList -- 
+fieldsList -- List of 3 field names that will be used to update the SYMBOLOGY field
 
 Outputs:
-output -- 
+output -- None
 
 '''
 def calculateSymbology(inFC, fieldsList):
