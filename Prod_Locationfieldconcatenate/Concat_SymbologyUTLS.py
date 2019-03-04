@@ -80,6 +80,7 @@ logger.info("Define Variables...")
 
 # Define local testing gdb file location
 gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
+wMain              = gdb + '\wMain'
 wSystemValve       = gdb + '\wSystemValve'
 wControlValve      = gdb + '\wControlValve'
 swNetworkStructure = gdb + '\swNetworkStructure'
@@ -91,20 +92,64 @@ swNetworkStructure = gdb + '\swNetworkStructure'
 #storm_ds = sde + '\OPERATIONS.OPS.STORM_NETWORK'
 #datasets = [water_ds, sewer_ds, storm_ds]
 
-tTable = []
+swNetworkStructureFlds = ['OBJECTID','NODETYPE','STATUS','STORMSYSTEM','SYMBOLOGY']
+swNetworkStructureLST  = []
 
-# Make a nested list of ObjectID, Status,..... 
-outputMessage("Building index...")
-for row in arcpy.da.SearchCursor(swNetworkStructure, ['OBJECTID','NODETYPE','STATUS','STORMSYSTEM']):
+wSystemValveFlds       = []
+wSystemValveLST        = []
+
+wControlValveFlds      = []
+wControlValveLST       = []
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
+#================================#
+# Define functions
+#================================# 
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+'''
+Make a nested list of desired fields and their attributes using feature class input and a list of 
+desired fields for the output nested list. Nested list is used
+
+Inputs:
+inFC -- Feature class input for Water, Wastewater, or Storm Water. e.g. wSystemValve, wControlValve, wNetworkStructure
+inFieldNames -- The desired fields to use in concatnate function to populate the symbology field.
+
+Outputs:
+outNstLst -- Output is a nested list that stores all the attribute field info for the input feature class.
+
+'''
+def buildNestedLst(inFC, inFieldNames, outNstLst):
     
-    tmpLst = []
-    tmpLst.append(row[0])
-    tmpLst.append(row[1])
-    tmpLst.append(row[2])
-    tmpLst.append(row[3])
+    outputMessage("Running Build Nested List for {}...".format(inFC))
+    
+    for row in arcpy.da.SearchCursor(inFC, inFieldNames):
+        
+        # Create a temporary list for storing field values and then appending to 
+        # nested list.
+        #
+        tmpLst = []
+        tmpLst.append(row[0])
+        tmpLst.append(row[1])
+        tmpLst.append(row[2])
+        tmpLst.append(row[3])
+        tmpLst.append(row[4])
+    
+        outNstLst.append(tmpLst)
+    
+    outputMessage("Build Nested List Completed for {}".format(inFC))
+    
+buildNestedLst(swNetworkStructure, swNetworkStructureFlds, swNetworkStructureLST) 
 
-    tTable.append(tmpLst)
-
-outputMessage(tTable)
+outputMessage(swNetworkStructureLST)
 
 logging.shutdown()
+
+#Use cursor to update any new or changed records in swPipeEnd 
+with arcpy.da.UpdateCursor("OPERATIONS.OPS.swPipeEnd", ["STATUS", "STORMSYSTEM", "SERVICESYMBOLOGY"]) as cursor:
+    for row in cursor:
+        symbol = "{}, {}".format(row[0], row[1])
+        #calc servicesymbology field if it doesn't match other fields
+        if symbol != row[2]:
+            row[2] = symbol
+        else: continue
+        cursor.updateRow(row)
