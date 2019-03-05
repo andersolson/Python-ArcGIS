@@ -68,7 +68,7 @@ arcpy.env.workspace = "in_memory"
 # Set a scratch workspace for storing any intermediate data
 ScratchGDB = arcpy.env.scratchGDB
 
-outputMessage("Scratch folder is: {}".format(ScratchGDB))
+outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -83,7 +83,12 @@ gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
 wMain              = gdb + '\wMain'
 wSystemValve       = gdb + '\wSystemValve'
 wControlValve      = gdb + '\wControlValve'
-swNetworkStructure = gdb + '\swNetworkStructure'
+#swNetworkStructure = gdb + '\swNetworkStructure'
+#swCasing           = gdb + '\swCasing'
+#swCeptor           = gdb + '\swCeptor'
+#swCleanOut         = gdb + '\swCleanOut'
+#swControlValve     = gdb + '\swControlValve'
+
 
 ## Define SDE file location
 #sde = r'C:\ScriptsForArcGIS\OPERATIONS - Default.sde'
@@ -93,7 +98,7 @@ swNetworkStructure = gdb + '\swNetworkStructure'
 #datasets = [water_ds, sewer_ds, storm_ds]
 
 swNetworkStructureFlds = ['NODETYPE','STATUS','STORMSYSTEM','SYMBOLOGY']
-wSystemValveFlds       = []
+wSystemValveFlds       = ['VALVETYPE','STATUS','','SYMBOLOGY']
 wControlValveFlds      = []
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
@@ -112,7 +117,7 @@ Outputs:
 output -- None
 
 '''
-def calculateSymbology(inFC, fieldsList):
+def updateSymbology3flds(inFC, fieldsList):
     #Use update cursor to update any new or changed records in the inFC 
     with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor:
         for row in cursor:
@@ -134,7 +139,10 @@ def calculateSymbology(inFC, fieldsList):
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-calculateSymbology()
+outputMessage('Running functions...')
+
+updateSymbology3flds(swNetworkStructure,swNetworkStructureFlds)
+
+outputMessage('Process Complete...')
 
 logging.shutdown()
-
