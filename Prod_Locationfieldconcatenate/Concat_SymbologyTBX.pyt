@@ -40,31 +40,24 @@ class fieldConcat(object):
     def getParameterInfo(self):
         """Define parameter definitions"""  
         
-        in_features = arcpy.Parameter(
+        param0 = arcpy.Parameter(
             displayName="Input Feature Layer",
             name="Input Datatype: GPFeatureLayer",
             datatype="GPFeatureLayer",
             parameterType="Required",
-            direction="Input",
-            multiValue=True)          
-
-        fields = arcpy.Parameter(
-            displayName="Field",
-            name="Input Datatype: GPString",
-            datatype="GPString",
-            parameterType="Optional",
-            direction="Input")   
-        
-        value_table = arcpy.Parameter(  
-            displayName = "Value Table",  
-            name = "Input Datatype: value_table",  
-            datatype = "GPValueTable",  
-            parameterType = "Optional",  
             direction="Input")          
-        
-        value_table.columns =([["GPString", "Feature Class"], ["GPString","Field"]])  
 
-        params = [in_features, fields, value_table]
+        param1 = arcpy.Parameter(
+            displayName="Field",
+            name="Input Datatype: Field",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input",
+            multiValue=True)       
+        
+        param1.parameterDependencies = [param0.name]
+
+        params = [param0,param1]
         return params
 
     def isLicensed(self):
@@ -90,7 +83,7 @@ class fieldConcat(object):
         # Configure logger 
         #================================# 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-        
+        '''
         # Setup the logfile name
         t = datetime.datetime.now()
         
@@ -111,14 +104,14 @@ class fieldConcat(object):
         logger.addHandler(fh)
         
         logger.info("Running: {0}".format(sys.argv[0]))       
-        
+        '''
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
         #================================#
         # Define environment and messaging
         #================================# 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
         
-        logger.info("Define environment and messaging...")
+        #logger.info("Define environment and messaging...")
         
         def outputMessage(msg):
             print(msg)
@@ -137,10 +130,7 @@ class fieldConcat(object):
         # Set a scratch workspace for storing any intermediate data
         ScratchGDB = arcpy.env.scratchGDB
         
-        outputMessage("Workspace is: {}".format(arcpy.env.workspace))        
-        
-        prodTable    = parameters[0].valueAsText
-        compTable    = parameters[1].valueAsText
+        outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
         #================================#
@@ -148,6 +138,12 @@ class fieldConcat(object):
         #================================# 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
         
-        logger.info("Define Variables...")
+        inputFeature    = parameters[0].valueAsText        
+        fieldSelection  = parameters[1].valueAsText 
         
-        logging.shutdown()
+        fieldLst = fieldSelection.split(";")
+        
+        for i in fieldString:
+            outputMessage(i)
+
+        #logging.shutdown()
