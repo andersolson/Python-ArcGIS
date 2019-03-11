@@ -28,8 +28,12 @@ import datetime
 
 # Setup the logfile name
 t = datetime.datetime.now()
-#logFile = r'C:\ScriptsForArcGIS\Prod\UtilitiesNetworksBackup\utilities_networks_backup'
-logFile = r'U:\AOLSON\Working\temp\ConcatLog'
+
+##Local location for testing
+#logFile = r'U:\AOLSON\Working\temp\ConcatLog'
+
+#Server location for the real deal
+logFile = r'C:\ScriptsForArcGIS\Prod\UtilitiesNetworksBackup\utilities_networks_backup'
 logName = logFile + t.strftime("%y%m%d") + ".log"
 
 # Define, format, and set logger levels 
@@ -78,28 +82,26 @@ outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 
 logger.info("Define Variables...")
 
-# Define local testing gdb file location
-gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
-wMain              = gdb + '\wMain'
-wSystemValve       = gdb + '\wSystemValve'
-wControlValve      = gdb + '\wControlValve'
-#swNetworkStructure = gdb + '\swNetworkStructure'
-#swCasing           = gdb + '\swCasing'
-#swCeptor           = gdb + '\swCeptor'
-#swCleanOut         = gdb + '\swCleanOut'
-#swControlValve     = gdb + '\swControlValve'
+## Define local testing gdb file location
+#gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
+#wSystemValve        = gdb + '\wSystemValve'
+##swNetworkStructure  = gdb + '\swNetworkStructure'
+##swCasing           = gdb + '\swCasing'
+##swCeptor           = gdb + '\swCeptor'
+##swCleanOut         = gdb + '\swCleanOut'
+##swControlValve     = gdb + '\swControlValve'
 
 
-## Define SDE file location
-#sde = r'C:\ScriptsForArcGIS\OPERATIONS - Default.sde'
+# Define SDE file location
+sde = r'C:\ScriptsForArcGIS\OPERATIONS - Default.sde'
+wSystemValve = sde + '\OPERATIONS.OPS.WATER_NETWORK\wSystemValve'
 #water_ds = sde + '\OPERATIONS.OPS.WATER_NETWORK'
 #sewer_ds = sde + '\OPERATIONS.OPS.WASTEWATER_NETWORK'
 #storm_ds = sde + '\OPERATIONS.OPS.STORM_NETWORK'
 #datasets = [water_ds, sewer_ds, storm_ds]
 
 swNetworkStructureFlds = ['NODETYPE','STATUS','STORMSYSTEM','SYMBOLOGY']
-wSystemValveFlds       = ['VALVETYPE','STATUS','','SYMBOLOGY']
-wControlValveFlds      = []
+wSystemValveFlds       = ['VALVECLASS','VALVETYPE','STATUS','SYMBOLOGY']
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -118,6 +120,16 @@ output -- None
 
 '''
 def updateSymbology3flds(inFC, fieldsList):
+    
+    ##Local gdb for testing
+    #edit = arcpy.da.Editor(gdb)
+    
+    #SDE for the real deal
+    edit = arcpy.da.Editor(sde)
+    
+    edit.startEditing()
+    edit.startOperation()
+    
     #Use update cursor to update any new or changed records in the inFC 
     with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor:
         for row in cursor:
@@ -132,6 +144,9 @@ def updateSymbology3flds(inFC, fieldsList):
                 
             else:
                 pass
+    
+    edit.stopOperation()
+    edit.stopEditing(True)
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -141,7 +156,8 @@ def updateSymbology3flds(inFC, fieldsList):
 
 outputMessage('Running functions...')
 
-updateSymbology3flds(swNetworkStructure,swNetworkStructureFlds)
+#updateSymbology3flds(swNetworkStructure,swNetworkStructureFlds)
+updateSymbology3flds(wSystemValve,wSystemValveFlds)
 
 outputMessage('Process Complete...')
 
