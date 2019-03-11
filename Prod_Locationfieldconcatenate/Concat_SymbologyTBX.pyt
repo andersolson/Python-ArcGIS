@@ -152,8 +152,10 @@ class fieldConcat(object):
         targetField     = parameters[2].valueAsText 
         
         #Local gdb for testing and sde for the real deal
-        #editorWrksp     = re.match("(.*?)gdb",inFeature).group()
-        editorWrksp     = re.match("(.*?)sde",inFeature).group()
+        try:
+            editorWrksp     = re.match("(.*?)sde",inFeature).group()
+        except:
+            editorWrksp     = re.match("(.*?)gdb",inFeature).group()
         
         #outputMessage(editorWrksp)
         
