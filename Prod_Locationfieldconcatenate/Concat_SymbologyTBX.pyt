@@ -19,6 +19,7 @@ import os
 import sys
 import logging
 import datetime
+import re
 
 class Toolbox(object):
     def __init__(self):
@@ -33,8 +34,8 @@ class Toolbox(object):
 class fieldConcat(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
-        self.label = "Concatnate fields"
-        self.description = "Concatnate attributes from multiple fields into another field."
+        self.label = "Concatenate Fields"
+        self.description = "Concatenate attribute values from multiple fields into another field."
         self.canRunInBackground = False
 
     def getParameterInfo(self):
@@ -42,22 +43,30 @@ class fieldConcat(object):
         
         param0 = arcpy.Parameter(
             displayName="Input Feature Layer",
-            name="Input Datatype: GPFeatureLayer",
+            name="Input Feature for Concatenate",
             datatype="GPFeatureLayer",
             parameterType="Required",
             direction="Input")          
 
         param1 = arcpy.Parameter(
-            displayName="Field",
-            name="Input Datatype: Field",
+            displayName="Fields",
+            name="Input Fields for Concatenate",
             datatype="Field",
             parameterType="Required",
             direction="Input",
-            multiValue=True)       
+            multiValue=True)   
+        
+        param2 = arcpy.Parameter(
+            displayName="Target",
+            name="Target Field for Concatenate",
+            datatype="Field",
+            parameterType="Required",
+            direction="Input")         
         
         param1.parameterDependencies = [param0.name]
+        param2.parameterDependencies = [param0.name]
 
-        params = [param0,param1]
+        params = [param0,param1,param2]
         return params
 
     def isLicensed(self):
@@ -127,8 +136,8 @@ class fieldConcat(object):
         # Set workspace to be in memory for faster run time
         arcpy.env.workspace = "in_memory"
         
-        # Set a scratch workspace for storing any intermediate data
-        ScratchGDB = arcpy.env.scratchGDB
+        ## Set a scratch workspace for storing any intermediate data
+        #ScratchGDB = arcpy.env.scratchGDB
         
         outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 
@@ -138,12 +147,51 @@ class fieldConcat(object):
         #================================# 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
         
-        inputFeature    = parameters[0].valueAsText        
+        inFeature       = parameters[0].valueAsText        
         fieldSelection  = parameters[1].valueAsText 
+        targetField     = parameters[2].valueAsText 
         
+        #Local gdb for testing and sde for the real deal
+        #editorWrksp     = re.match("(.*?)gdb",inFeature).group()
+        editorWrksp     = re.match("(.*?)sde",inFeature).group()
+        
+        #outputMessage(editorWrksp)
+        
+        # Split the field selection input at ';' character and simultaneously
+        # add the selected fields to a list.
         fieldLst = fieldSelection.split(";")
         
-        for i in fieldString:
-            outputMessage(i)
+        # Append the target field name to the end of the selected fields list
+        fieldLst.append(targetField)
+        
+        
+        edit = arcpy.da.Editor(editorWrksp)     
+        
+        # Open an editor and start the editing function
+        edit.startEditing()
+        edit.startOperation()        
 
-        #logging.shutdown()
+        with arcpy.da.UpdateCursor(inFeature, fieldLst) as cursor:
+            
+            for row in cursor:
+                
+                # Create the concatenate string, but exclude the last element in 
+                # the list because it is the target field. 
+                # Use the new concat string to populate the target field.
+                concatValue = ",".join(map(str, row[:-1]))           
+                
+                #calc the target field if it does not match the concat pattern
+                if row[-1] != concatValue:
+                    
+                    # Target field row is equal to the new string
+                    row[-1] = concatValue
+                    
+                    #update the target row
+                    cursor.updateRow(row)
+                    
+                else:
+                    pass            
+        
+        # Close the editor and save edits
+        edit.stopOperation()
+        edit.stopEditing(True)     
