@@ -57,7 +57,7 @@ class fieldConcat(object):
             multiValue=True)   
         
         param2 = arcpy.Parameter(
-            displayName="Target",
+            displayName="Target Field",
             name="Target Field for Concatenate",
             datatype="Field",
             parameterType="Required",
@@ -89,33 +89,6 @@ class fieldConcat(object):
         
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
         #================================#
-        # Configure logger 
-        #================================# 
-        ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-        '''
-        # Setup the logfile name
-        t = datetime.datetime.now()
-        
-        ##Local location for testing
-        #logFile = r'U:\AOLSON\Working\temp\ConcatLog'
-        
-        #Server location for the real deal
-        logFile = r'C:\ScriptsForArcGIS\Prod\UtilitiesNetworksBackup\utilities_networks_backup'
-        logName = logFile + t.strftime("%y%m%d") + ".log"
-        
-        # Define, format, and set logger levels 
-        logger = logging.getLogger("ConcatLog")
-        logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(logName)
-        fh.setLevel(logging.DEBUG)
-        formatter = logging.Formatter('%(asctime)s - %(filename)s : line %(lineno)d - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        logger.addHandler(fh)
-        
-        logger.info("Running: {0}".format(sys.argv[0]))       
-        '''
-        ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
-        #================================#
         # Define environment and messaging
         #================================# 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
@@ -138,8 +111,6 @@ class fieldConcat(object):
         
         ## Set a scratch workspace for storing any intermediate data
         #ScratchGDB = arcpy.env.scratchGDB
-        
-        outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 
         ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
         #================================#
@@ -154,8 +125,10 @@ class fieldConcat(object):
         #Local gdb for testing and sde for the real deal
         try:
             editorWrksp     = re.match("(.*?)sde",inFeature).group()
+            outputMessage("Workspace is: {}".format(editorWrksp))
         except:
             editorWrksp     = re.match("(.*?)gdb",inFeature).group()
+            outputMessage("Workspace is: {}".format(editorWrksp))
         
         #outputMessage(editorWrksp)
         
@@ -165,8 +138,7 @@ class fieldConcat(object):
         
         # Append the target field name to the end of the selected fields list
         fieldLst.append(targetField)
-        
-        
+
         edit = arcpy.da.Editor(editorWrksp)     
         
         # Open an editor and start the editing function
