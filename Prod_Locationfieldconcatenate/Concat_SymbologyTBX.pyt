@@ -42,9 +42,9 @@ class fieldConcat(object):
         """Define parameter definitions"""  
         
         param0 = arcpy.Parameter(
-            displayName="Input Feature Layer",
+            displayName="Input Feature Layer (Input must be stored in GDB or SDE)",
             name="Input Feature for Concatenate",
-            datatype="GPFeatureLayer",
+            datatype="Dataset",
             parameterType="Required",
             direction="Input")          
 
@@ -120,7 +120,7 @@ class fieldConcat(object):
         
         inFeature       = parameters[0].valueAsText        
         fieldSelection  = parameters[1].valueAsText 
-        targetField     = parameters[2].valueAsText 
+        targetField     = parameters[2].valueAsText        
         
         #Local gdb for testing and sde for the real deal
         try:
@@ -168,4 +168,4 @@ class fieldConcat(object):
         
         # Close the editor and save edits
         edit.stopOperation()
-        edit.stopEditing(True)     
+        edit.stopEditing(True)
