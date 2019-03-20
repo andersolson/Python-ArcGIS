@@ -50,7 +50,6 @@ try:
     outputMessage("Connected users are:")
     outputMessage(userNames)
     
-    '''
     #Block new connections to the database.
     logger.info("Block new connections to the database...")
     outputMessage("Block new connections to the database...")
@@ -64,7 +63,6 @@ try:
     arcpy.DisconnectUser(workspace, "ALL")
     logger.info("All users disconnected.")
     outputMessage("All users disconnected.")
-    '''
 
     #Get a list of versions to pass into the ReconcileVersions tool.
     logger.info("Get a list of versions to pass into Reconcile Versions tool...")
@@ -73,12 +71,13 @@ try:
     logger.info("Version list is: {0}".format(versionList))
     outputMessage("Version list is: {0}".format(versionList))
     
-    '''
     #Execute the ReconcileVersions tool.
     logger.info("Execute the Reconcile Versions tool...")
-    outputMessage("Execute the Reconcile Versions tool...")
+    outputMessage("Execute the Reconcile ALL Versions tool...")
     arcpy.env.overwriteOutput = True
     arcpy.ReconcileVersions_management(workspace, "ALL_VERSIONS", "dbo.DEFAULT", versionList, "LOCK_ACQUIRED", "ABORT_CONFLICTS", "BY_OBJECT", "FAVOR_TARGET_VERSION", "POST", "KEEP_VERSION", "C:\ScriptsForArcGIS\log\ReconcileALL_log.txt")
+    logger.info("Execute the Reconcile BLOCKING tool...")
+    outputMessage("Execute the Reconcile BLOCKING Versions tool...")
     arcpy.ReconcileVersions_management(workspace, "BLOCKING_VERSIONS", "dbo.DEFAULT", versionList, "LOCK_ACQUIRED", "ABORT_CONFLICTS", "BY_OBJECT", "FAVOR_TARGET_VERSION", "POST", "KEEP_VERSION", "C:\ScriptsForArcGIS\log\ReconcileBLOCK_log.txt")
     logger.info("Reconcile complete.")
     outputMessage("Reconcile complete.")
@@ -96,7 +95,6 @@ try:
     arcpy.AcceptConnections(workspace, True)
     logger.info("New connections allowed.")
     outputMessage("New connections allowed.")
-    '''
 
 except Exception as e:
     print(e.args[0])
