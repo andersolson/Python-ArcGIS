@@ -14,6 +14,7 @@ Description: Script to backup all Operations SDE datasets to file gdb on
               
 
 Initial Release Date: 07/25/18
+Last Edit: 4/8/19
 
 ****************************************************************'''
 
@@ -135,6 +136,12 @@ try:
         arcpy.env.workspace = dataset
         for fc in arcpy.ListFeatureClasses():
             arcpy.CopyFeatures_management(fc, os.path.join(backup, dataset.split('.')[-1], fc.split('.')[-1]))
+
+    #Create time variable to track total script run time
+    t2 = datetime.now()
+    timer = t-t2
+    
+    logger.info("Run time is: {0}".format(timer))
 
 except Exception as e:
     print e.args[0]
