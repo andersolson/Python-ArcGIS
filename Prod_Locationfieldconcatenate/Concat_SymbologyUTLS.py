@@ -154,7 +154,10 @@ def updateSymbology3flds(inFC, fieldsList):
         for row in cursor:
             symbol = "{}, {}, {}".format(row[0], row[1], row[2])
             
-            #calc the symbology field if it doesn't match other fields
+            # Calc the symbology field if it doesn't match other fields. Rows 
+            # that do not match the concat pattern have been recently changed and 
+            # need to be updated. This IF statement makes sure only the currently
+            # edited rows are updated and not all the rows in the data.
             if symbol != row[3]:
                 row[3] = symbol
                 
@@ -194,7 +197,10 @@ def updateSymbology2flds(inFC, fieldsList):
         for row in cursor:
             symbol = "{}, {}".format(row[0], row[1])
             
-            #calc the symbology field if it doesn't match other fields
+            # Calc the symbology field if it doesn't match other fields. Rows 
+            # that do not match the concat pattern have been recently changed and 
+            # need to be updated. This IF statement makes sure only the currently
+            # edited rows are updated and not all the rows in the data.
             if symbol != row[2]:
                 row[2] = symbol
                 
