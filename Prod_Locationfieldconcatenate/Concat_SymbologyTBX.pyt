@@ -150,11 +150,14 @@ class fieldConcat(object):
             for row in cursor:
                 
                 # Create the concatenate string, but exclude the last element in 
-                # the list because it is the target field. 
+                # the list because it is the target field, SYMBOLOGY. 
                 # Use the new concat string to populate the target field.
                 concatValue = ",".join(map(str, row[:-1]))           
                 
-                #calc the target field if it does not match the concat pattern
+                # Calc the target field if it does not match the concat pattern. Rows 
+                # that do not match the concat pattern have been recently changed and 
+                # need to be updated. This IF statement makes sure only the currently
+                # edited rows are updated and not all the rows in the data.
                 if row[-1] != concatValue:
                     
                     # Target field row is equal to the new string
