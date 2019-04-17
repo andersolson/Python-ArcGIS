@@ -37,11 +37,11 @@ def outputError(msg):
 # Setup the logfile name
 t = datetime.datetime.now()
 
-#Local location for testing
-logFile = r'U:\AOLSON\Working\temp\ConcatLog'
+##Local location for testing
+#logFile = r'U:\AOLSON\Working\temp\ConcatLog'
 
-##Server location for the real deal
-#logFile = r'C:\ScriptsForArcGIS\Prod\UtilitiesNetworksBackup\utilities_networks_backup'
+#Server location for the real deal
+logFile = r'C:\ScriptsForArcGIS\Test'
 logName = logFile + t.strftime("%y%m%d") + ".log"
 
 # Define, format, and set logger levels 
@@ -76,11 +76,12 @@ def outputError(msg):
 # Set the overwriteOutput ON
 arcpy.gp.overwriteOutput = True
 
-# Set workspace to be in memory for faster run time
-arcpy.env.workspace = "in_memory"
-
 # Set a scratch workspace for storing any intermediate data
 ScratchGDB = arcpy.env.scratchGDB
+arcpy.env.workspace = ScratchGDB
+
+## Set workspace to be in memory for faster run time
+#arcpy.env.workspace = "in_memory"
 
 logger.info("Workspace is: {}".format(arcpy.env.workspace))
 outputMessage("Workspace is: {}".format(arcpy.env.workspace))
@@ -94,13 +95,14 @@ outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 logger.info("Define Variables...")
 outputMessage("Define Variables...")
 
+'''
 # Define local testing gdb file location
 gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
 wSystemValve       = gdb + '\wSystemValve'
 swNetworkStructure = gdb + '\swNetworkStructure'
 swPipeEnds         = gdb + '\swPipeEnd'
-
 '''
+
 # Define SDE file location and feature classes
 sde = r'C:\ScriptsForArcGIS\OPERATIONS - Default.sde'
 
@@ -110,7 +112,6 @@ wSystemValve  = sde + '\OPERATIONS.OPS.WATER_NETWORK\wSystemValve'
 # Storm Network features
 swNetworkStructure = sde + '\OPERATIONS.OPS.WATER_NETWORK\swNetworkStructure'
 swPipeEnds         = sde + '\OPERATIONS.OPS.WATER_NETWORK\swPipeEnd'
-'''
 
 #Water Network Concat Fields
 wSystemValveFlds       = ['VALVEUSE','VALVETYPE','STATUS','SYMBOLOGY']
@@ -140,11 +141,11 @@ output -- None
 '''
 def updateSymbology3flds(inFC, fieldsList):
     
-    #Local gdb for testing
-    edit = arcpy.da.Editor(gdb)
+    ##Local gdb for testing
+    #edit = arcpy.da.Editor(gdb)
     
-    ##SDE for the real deal
-    #edit = arcpy.da.Editor(sde)
+    #SDE for the real deal
+    edit = arcpy.da.Editor(sde)
     
     edit.startEditing()
     edit.startOperation()
@@ -169,6 +170,7 @@ def updateSymbology3flds(inFC, fieldsList):
     
     edit.stopOperation()
     edit.stopEditing(True)
+    del cursor
 
 '''
 Concatnate 2 fields into the SYMBOLOGY field for input feature classes
@@ -183,18 +185,18 @@ output -- None
 '''
 def updateSymbology2flds(inFC, fieldsList):
     
-    #Local gdb for testing
-    edit = arcpy.da.Editor(gdb)
+    ##Local gdb for testing
+    #edit = arcpy.da.Editor(gdb)
     
-    ##SDE for the real deal
-    #edit = arcpy.da.Editor(sde)
+    #SDE for the real deal
+    edit = arcpy.da.Editor(sde)
     
     edit.startEditing()
-    edit.startOperation()
-    
+    edit.startOperation()    
+      
     #Use update cursor to update any new or changed records in the inFC 
-    with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor:
-        for row in cursor:
+    with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor2:
+        for row in cursor2:
             symbol = "{}, {}".format(row[0], row[1])
             
             # Calc the symbology field if it doesn't match other fields. Rows 
@@ -205,14 +207,14 @@ def updateSymbology2flds(inFC, fieldsList):
                 row[2] = symbol
                 
                 #update the row
-                cursor.updateRow(row)
+                cursor2.updateRow(row)
                 
             else:
                 pass
     
     edit.stopOperation()
-    edit.stopEditing(True)
-
+    edit.stopEditing(True) 
+    del cursor2
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
