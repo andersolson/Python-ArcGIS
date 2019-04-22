@@ -42,6 +42,7 @@ t = datetime.datetime.now()
 
 #Server location for the real deal
 logFile = r'C:\ScriptsForArcGIS\Test'
+
 logName = logFile + t.strftime("%y%m%d") + ".log"
 
 # Define, format, and set logger levels 
@@ -95,6 +96,7 @@ outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 logger.info("Define Variables...")
 outputMessage("Define Variables...")
 
+
 '''
 # Define local testing gdb file location
 gdb = r'U:\AOLSON\Working\temp\Concat_GDB.gdb'
@@ -110,8 +112,9 @@ sde = r'C:\ScriptsForArcGIS\OPERATIONS - Default.sde'
 wSystemValve  = sde + '\OPERATIONS.OPS.WATER_NETWORK\wSystemValve'
 
 # Storm Network features
-swNetworkStructure = sde + '\OPERATIONS.OPS.WATER_NETWORK\swNetworkStructure'
-swPipeEnds         = sde + '\OPERATIONS.OPS.WATER_NETWORK\swPipeEnd'
+swNetworkStructure = sde + '\OPERATIONS.OPS.STORM_NETWORK\swNetworkStructure'
+swPipeEnds         = sde + '\OPERATIONS.OPS.STORM_NETWORK\swPipeEnd'
+
 
 #Water Network Concat Fields
 wSystemValveFlds       = ['VALVEUSE','VALVETYPE','STATUS','SYMBOLOGY']
@@ -128,94 +131,7 @@ swPipeEndsFlds         = ['STATUS','STORMSYSTEM','SYMBOLOGY']
 # Define functions
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-'''
-Concatnate 3 fields into the SYMBOLOGY field for input feature classes
-
-Inputs:
-inFC -- Feature class input for Water, Wastewater, or Storm Water datasets. e.g. wSystemValve, wControlValve, wNetworkStructure
-fieldsList -- List of 3 field names that will be used to update the SYMBOLOGY field
-
-Outputs:
-output -- None
-
-'''
-def updateSymbology3flds(inFC, fieldsList):
-    
-    ##Local gdb for testing
-    #edit = arcpy.da.Editor(gdb)
-    
-    #SDE for the real deal
-    edit = arcpy.da.Editor(sde)
-    
-    edit.startEditing()
-    edit.startOperation()
-    
-    #Use update cursor to update any new or changed records in the inFC 
-    with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor:
-        for row in cursor:
-            symbol = "{}, {}, {}".format(row[0], row[1], row[2])
-            
-            # Calc the symbology field if it doesn't match other fields. Rows 
-            # that do not match the concat pattern have been recently changed and 
-            # need to be updated. This IF statement makes sure only the currently
-            # edited rows are updated and not all the rows in the data.
-            if symbol != row[3]:
-                row[3] = symbol
-                
-                #update the row
-                cursor.updateRow(row)
-                
-            else:
-                pass
-    
-    edit.stopOperation()
-    edit.stopEditing(True)
-    del cursor
-
-'''
-Concatnate 2 fields into the SYMBOLOGY field for input feature classes
-
-Inputs:
-inFC -- Feature class input for Water, Wastewater, or Storm Water datasets. e.g. wSystemValve, wControlValve, wNetworkStructure
-fieldsList -- List of 2 field names that will be used to update the SYMBOLOGY field
-
-Outputs:
-output -- None
-
-'''
-def updateSymbology2flds(inFC, fieldsList):
-    
-    ##Local gdb for testing
-    #edit = arcpy.da.Editor(gdb)
-    
-    #SDE for the real deal
-    edit = arcpy.da.Editor(sde)
-    
-    edit.startEditing()
-    edit.startOperation()    
-      
-    #Use update cursor to update any new or changed records in the inFC 
-    with arcpy.da.UpdateCursor(inFC, fieldsList) as cursor2:
-        for row in cursor2:
-            symbol = "{}, {}".format(row[0], row[1])
-            
-            # Calc the symbology field if it doesn't match other fields. Rows 
-            # that do not match the concat pattern have been recently changed and 
-            # need to be updated. This IF statement makes sure only the currently
-            # edited rows are updated and not all the rows in the data.
-            if symbol != row[2]:
-                row[2] = symbol
-                
-                #update the row
-                cursor2.updateRow(row)
-                
-            else:
-                pass
-    
-    edit.stopOperation()
-    edit.stopEditing(True) 
-    del cursor2
-
+''' No functions'''
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
 # Call Functions
@@ -225,23 +141,109 @@ def updateSymbology2flds(inFC, fieldsList):
 logger.info('Running Concatenate function...')
 outputMessage('Running Concatenate function...')
 
+# Define the feature dataset workspace
+
+##Local gdb for testing
+#edit = arcpy.da.Editor(gdb)
+
+#SDE for the real deal
+edit = arcpy.da.Editor(sde)
+
+'''
 logger.info('\tProcessing wSystemValve')
 outputMessage('\tProcessing wSystemValve')
-updateSymbology3flds(wSystemValve,wSystemValveFlds)
+edit.startEditing()
+edit.startOperation()
+#Use update cursor to update any new or changed records in the inFC 
+with arcpy.da.UpdateCursor(wSystemValve, wSystemValveFlds) as cursor0:
+    for row in cursor0:
+        symbol = "{}, {}, {}".format(row[0], row[1], row[2])
+        
+        # Calc the symbology field if it doesn't match other fields. Rows 
+        # that do not match the concat pattern have been recently changed and 
+        # need to be updated. This IF statement makes sure only the currently
+        # edited rows are updated and not all the rows in the data.
+        if symbol != row[3]:
+            row[3] = symbol
+            
+            #update the row
+            cursor0.updateRow(row)
+            
+        else:
+            pass
+del cursor0
+
+#edit.stopOperation()
+#edit.stopEditing(True)
 logger.info('\twSystemValves Complete!')
 outputMessage('\twSystemValves Complete!')
+'''
 
+'''
 logger.info('\tProcessing swNetworkStructure')
 outputMessage('\tProcessing swNetworkStructure')
-updateSymbology3flds(swNetworkStructure,swNetworkStructureFlds)
+edit.startEditing()
+edit.startOperation()
+#Use update cursor to update any new or changed records in the inFC 
+with arcpy.da.UpdateCursor(swNetworkStructure, swNetworkStructureFlds) as cursor1:
+    for row in cursor1:
+        symbol = "{}, {}, {}".format(row[0], row[1], row[2])
+        
+        # Calc the symbology field if it doesn't match other fields. Rows 
+        # that do not match the concat pattern have been recently changed and 
+        # need to be updated. This IF statement makes sure only the currently
+        # edited rows are updated and not all the rows in the data.
+        if symbol != row[3]:
+            row[3] = symbol
+            
+            #update the row
+            cursor1.updateRow(row)
+            
+        else:
+            pass
+del cursor1
+
+#edit.stopOperation()
+#edit.stopEditing(True)
 logger.info('\tswNetworkStructure Complete!')
 outputMessage('\tswNetworkStructure Complete!')
+'''
 
 logger.info('\tProcessing swPipeEnds')
 outputMessage('\tProcessing swPipeEnds')
-updateSymbology2flds(swPipeEnds,swPipeEndsFlds)
+edit.startEditing(True,False)
+edit.startOperation()
+#Use update cursor to update any new or changed records in the inFC 
+
+outputMessage(swPipeEnds)
+
+cursor = arcpy.da.UpdateCursor(swPipeEnds, swPipeEndsFlds)
+
+for row in cursor:
+    symbol = "{}, {}".format(row[0], row[1])
+    outputMessage(symbol)
+    
+    # Calc the symbology field if it doesn't match other fields. Rows 
+    # that do not match the concat pattern have been recently changed and 
+    # need to be updated. This IF statement makes sure only the currently
+    # edited rows are updated and not all the rows in the data.
+    if symbol != row[2]:
+        row[2] = symbol
+        
+        outputMessage("Cursor update row...")
+        #update the row
+        cursor.updateRow(row)
+        
+    else:
+        outputMessage("No cursor update row...")
+        pass
+del cursor
+
+edit.stopOperation()
+edit.stopEditing(True) 
 logger.info('\tswPipeEnds Complete!')
 outputMessage('\tswPipeEnds Complete!')
+
 
 logger.info('Process Completed!')
 outputMessage('Process Complete!')
