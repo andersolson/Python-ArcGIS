@@ -64,9 +64,10 @@ noMatchPipes = [x for x in fieldNames1 if x not in fieldNames0]
 outputMessage("Fields with no match in Pipes: {0}".format(noMatchMains))
 outputMessage("Fields with no match in Mains: {0}".format(noMatchPipes))
 
-mainDomains = [x for x in fieldNames0 if x not in fieldNames1]
-pipeDomains = [x for x in fieldNames1 if x not in fieldNames0]
+mainDomains = [f.domain for f in arcpy.ListFields(inData0) if f.domain != ""]
+pipeDomains = [f.domain for f in arcpy.ListFields(inData1) if f.domain != ""]
 
-
+outputMessage("Domains for Mains: {0}".format(mainDomains))
+outputMessage("Domains for Pipes: {0}".format(pipeDomains))
 
     
