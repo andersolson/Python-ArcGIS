@@ -45,8 +45,10 @@ outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-inData0 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wMain"
-inData1 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wNonPressurizedPipes"
+#inData0 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wMain"
+#inData1 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wNonPressurizedPipes"
+inData0 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wSystemValve"
+inData1 = r"U:\AOLSON\Working\temp\Water_Network.gdb\wControlValves"
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##   
 #================================#
@@ -61,8 +63,8 @@ fieldNames1 = [f.name for f in arcpy.ListFields(inData1)]
 noMatchMains = [x for x in fieldNames0 if x not in fieldNames1]
 noMatchPipes = [x for x in fieldNames1 if x not in fieldNames0]
 
-outputMessage("Fields with no match in Pipes: {0}".format(noMatchMains))
-outputMessage("Fields with no match in Mains: {0}".format(noMatchPipes))
+outputMessage("Fields with no match in Dataset 1: {0}".format(noMatchMains))
+outputMessage("Fields with no match in Dataset 2: {0}".format(noMatchPipes))
 
 mainDomains = [f.domain for f in arcpy.ListFields(inData0) if f.domain != ""]
 pipeDomains = [f.domain for f in arcpy.ListFields(inData1) if f.domain != ""]
@@ -73,5 +75,5 @@ pipeDomains = [f.domain for f in arcpy.ListFields(inData1) if f.domain != ""]
 noDomainMains = [x for x in mainDomains if x not in pipeDomains]
 noDomainPipes = [x for x in pipeDomains if x not in mainDomains]
 
-outputMessage("Domains with no match in Pipes: {0}".format(noDomainMains))
-outputMessage("Domains with no match in Mains: {0}".format(noDomainPipes))
+outputMessage("Domains with no match in Dataset 1: {0}".format(noDomainMains))
+outputMessage("Domains with no match in Dataset 2: {0}".format(noDomainPipes))
