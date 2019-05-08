@@ -19,3 +19,22 @@ def ifBlock(cat):
         return 'Sump Drain'   
     else:
         return cat
+    
+def ifBlock(cat):
+    if cat == 'Altitude':
+        return 'Altitude'
+    elif cat == 'Check Valve':
+        return 'Check'
+    elif cat == 'PRV - Pressure Reducer Valve':
+        return 'PRV'
+    elif cat == 'Surge Valve':
+        return 'Surge' 
+    elif cat == 'Other':
+        return ''    
+    elif cat == 'PSV - Pressure Sustainer Valve' :
+        return ''      
+    else:
+        return cat
+
+NULL?
+'Zone Change Valve'?
