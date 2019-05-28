@@ -28,13 +28,9 @@ def ifBlock(cat):
     elif cat == 'PRV - Pressure Reducer Valve':
         return 'PRV'
     elif cat == 'Surge Valve':
-        return 'Surge' 
-    elif cat == 'Other':
-        return ''    
+        return 'Surge'  
     elif cat == 'PSV - Pressure Sustainer Valve' :
-        return ''      
+        return 'PSV'      
     else:
         return cat
 
-NULL?
-'Zone Change Valve'?
