@@ -45,7 +45,7 @@ outputMessage("Workspace is: {}".format(arcpy.env.workspace))
 #================================# 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 
-inData = r"U:\AOLSON\Working\temp\Export_Output_2.shp"
+inData = r"U:\AOLSON\Working\temp\DumpingGrounds.gdb\sw_PipeEndDeleteList"
 
 assetIDs = []
 
