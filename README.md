@@ -1,2 +1,2 @@
 # PythonArcGIS
-General tools I developed for ArcGIS
+Tools that use arcpy.
