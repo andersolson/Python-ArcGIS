@@ -1,2 +1,2 @@
 # PythonArcGIS
-Tools that use arcpy.
+Collection of tools and scripts that use arcpy.
