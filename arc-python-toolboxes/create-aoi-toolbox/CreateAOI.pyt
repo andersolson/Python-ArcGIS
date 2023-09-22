@@ -98,11 +98,11 @@ class Create_AOI(object):
         """The source code of the tool."""
         
         def outputMessage(msg):
-            print msg
+            print(msg)
             arcpy.AddMessage(msg)
         
         def outputError(msg):
-            print msg
+            print(msg)
             arcpy.AddError(msg)
         
         # Set the overwriteOutput ON
