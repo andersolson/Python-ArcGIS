@@ -1,3 +1,17 @@
+#-----------------------------------------------------------------------------
+# CreateAOI.py
+#
+# Author: Anders Olson 2023
+#
+# Usage: Script is a python toolbox that must be run inside ArcGIS
+#        interface.
+#
+# Description: This script contains 1 class.
+#              1. Create AOI Tool - Class creates a used defined AOI from lat/long
+#                 center point and a width/height variable.
+#
+#-------------------------------------------------------------------------------
+
 import arcpy
 import sys
 import os
