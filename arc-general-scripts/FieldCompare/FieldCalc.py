@@ -1,3 +1,31 @@
+def codeBlock(fld):
+    if fld == 'BELOW':
+        return 'BELOW GROUND'
+    elif fld == 'ABOVE':
+        return 'ABOVE GROUND'
+    elif fld == 'INDOOR':
+        return 'INDOOR'
+    else:
+        return 'UNKNOWN'
+
+def codeBlock(fld):
+    if fld == '1':
+        return 'CONTROLLER 1'
+    elif fld == '2':
+        return 'CONTROLLER 2'
+    elif fld == '3':
+        return 'CONTROLLER 3'
+    elif fld == '4':
+        return 'CONTROLLER 4'
+    elif fld == '5':
+        return 'CONTROLLER 5'
+    elif fld == '6':
+        return 'CONTROLLER 6'
+    elif fld == 'Unknown':
+        return 'UNKNOWN'
+    else:
+        return 'UNKNOWN'
+
 def ifBlock(cat):
     if cat == 'Potable Water':
         return 'Potable'
