@@ -74,6 +74,9 @@ employee_status_xlsx = f'{working_dir}\\City_users_positions_GIS_integration.xls
 # Output: joined report of matching active employees
 active_joined_report = f'{working_dir}\\joined_active_user_report.xlsx'
 
+# Output: joined report of nonactive employees
+nonactive_joined_report = f'{working_dir}\\joined_nonactive_user_report.xlsx'
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
 # Start calling functions
@@ -138,3 +141,5 @@ deactivated_employees = df2[df2['[Employee_Status]'].isin(['Terminated','Inactiv
 merged = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='left')
 outputMessage(f'Found {len(merged)} matching deactivated employees')
 
+# Output active employee matches to excel sheet
+merged.to_excel(nonactive_joined_report, index=False)
