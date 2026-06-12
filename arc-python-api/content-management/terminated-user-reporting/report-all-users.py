@@ -63,20 +63,20 @@ c3GIS = GIS(profile='aolson_prfl2')
 # Define working directory
 working_dir = r'C:\Users\is_olson\Documents\Projects\SSO_Update\reports'
 
-# Output file: excel sheet containing all agol users with date stamp
-all_users_xlsx = f'{working_dir}\\all_agol_users_{mdyDT}.xlsx'
-
-# Input: david's weekly excel report
+# Input: David's weekly report
 employee_status_report = f'{working_dir}\\City_users_positions_GIS_integration.csv'
 
-# Output: cleaned up excel version of david's report for reference, only active employees
-employee_status_xlsx = f'{working_dir}\\City_users_positions_GIS_integration.xlsx'
+# # Output file: excel sheet containing all agol users with date stamp
+# all_users_xlsx = f'{working_dir}\\all_agol_users_{mdyDT}.xlsx'
 
-# Output: joined report of matching active employees
-active_joined_report = f'{working_dir}\\joined_active_user_report.xlsx'
+# # Output: cleaned up excel version of david's report for reference, only active employees
+# employee_status_xlsx = f'{working_dir}\\City_users_positions_GIS_integration.xlsx'
 
-# Output: joined report of nonactive employees
-nonactive_joined_report = f'{working_dir}\\joined_nonactive_user_report.xlsx'
+# # Output: joined report of matching active employees
+# active_joined_report = f'{working_dir}\\joined_active_user_report.xlsx'
+
+# # Output: joined report of nonactive employees
+# nonactive_joined_report = f'{working_dir}\\joined_nonactive_user_report.xlsx'
 
 # Make a single output file
 output_xlsx = f"{working_dir}\\agol_city_employee_match_report_{mdyDT}.xlsx"
@@ -134,13 +134,15 @@ deactivated_employees = df2[df2['[Employee_Status]'].isin(inactive_statuses)]
 # 3. Join dataframes on email df and df2 using common email field
 # AGOL match for active employees
 active_matched = df.merge(active_employees, left_on='email', right_on='[Email]', how='inner')
-outputMessage(f'Found {len(merged)} matching active employees')
+outputMessage(f'Found {len(active_matched)} matching active employees')
 
 # Active employees NOT matched to any AGOL user
 active_unmatched = active_employees[~active_employees['[Email]'].isin(df['email'])]
+outputMessage(f'Found {len(active_unmatched)} unmatched AGOL users')
 
 # Deactivated employees who STILL have AGOL accounts
 deactivated_with_accounts = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='inner')
+outputMessage(f'Found {len(active_unmatched)} deactivated AGOL users')
 
 # 3. Write all three dataframes to a sheet in one excel file
 with pd.ExcelWriter(output_xlsx, engine='xlsxwriter') as writer:
