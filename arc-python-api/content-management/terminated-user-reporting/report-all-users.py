@@ -68,6 +68,9 @@ all_users_xlsx = f'{working_dir}\\all_agol_users_{mdyDT}.xlsx'
 # Input: david's weekly excel report
 employee_status_report = f'{working_dir}\\City_users_positions_GIS_integration.csv'
 
+# Output: cleaned up excel version of david's report for reference, only active employees
+employee_status_xlsx = f'{working_dir}\\City_users_positions_GIS_integration.xlsx'
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
 # Start calling functions
@@ -105,5 +108,13 @@ df.to_excel(all_users_xlsx, index=False)
 
 # 3. Convert city employee status report to dataframe
 # Read David's report to a dataframe
-df2 = pd.read_excel(employee_status_report)
+df2 = pd.read_csv(employee_status_report)
 
+# Change email case to lower
+df2['[Primary Email]'] = df2['[Primary Email]'].str.lower()
+
+# Only active employees
+active_employees = df2[df2['[Status]'] == 'Active']
+
+# Export dataframe back to excel for reference
+active_employees.to_excel(employee_status_xlsx, index=False)
