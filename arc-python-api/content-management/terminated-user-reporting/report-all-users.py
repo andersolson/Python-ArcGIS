@@ -60,10 +60,13 @@ mdyDT = runStart.strftime('%Y%m%d')
 c3GIS = GIS(profile='aolson_prfl2')
 
 # Define working directory
-working_dir = r'C:\Users\is_olson\Documents\Projects\SSO_Update'
+working_dir = r'C:\Users\is_olson\Documents\Projects\SSO_Update\reports'
 
 # Output file: excel sheet containing all agol users with date stamp
 all_users_xlsx = f'{working_dir}\\all_agol_users_{mdyDT}.xlsx'
+
+# Input: david's weekly excel report
+employee_status_report = f'{working_dir}\\City_users_positions_GIS_integration.csv'
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
@@ -99,3 +102,8 @@ df['lastLogin'] = pd.to_datetime(df['lastLogin'], unit='ms')
 
 # 2. Convert dataframe to excel sheet
 df.to_excel(all_users_xlsx, index=False)
+
+# 3. Convert city employee status report to dataframe
+# Read David's report to a dataframe
+df2 = pd.read_excel(employee_status_report)
+
