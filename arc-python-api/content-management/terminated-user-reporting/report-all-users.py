@@ -111,10 +111,15 @@ df.to_excel(all_users_xlsx, index=False)
 df2 = pd.read_csv(employee_status_report)
 
 # Change email case to lower
-df2['[Primary Email]'] = df2['[Primary Email]'].str.lower()
+df2['[Email]'] = df2['[Email]'].str.lower()
 
 # Only active employees
 active_employees = df2[df2['[Status]'] == 'Active']
 
 # Export dataframe back to excel for reference
 active_employees.to_excel(employee_status_xlsx, index=False)
+
+# 4. Join dataframes on email
+# Join df and df2 using common email field
+merged = df.merge(active_employees, left_on='email', right_on='[Email]', how='left')
+outputMessage(f'Found {len(merged)} matching active employees')
