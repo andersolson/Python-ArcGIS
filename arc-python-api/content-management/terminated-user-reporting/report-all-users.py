@@ -129,3 +129,12 @@ outputMessage(f'Found {len(merged)} matching active employees')
 
 # Output active employee matches to excel sheet
 merged.to_excel(active_joined_report, index=False)
+
+# 5. Create a dataframe of terminated/retired/inactive employees
+# Only deactivated employees
+deactivated_employees = df2[df2['[Employee_Status]'].isin(['Terminated','Inactive','Retiree Gen'])]
+
+# Join df and df2 using common email field
+merged = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='left')
+outputMessage(f'Found {len(merged)} matching deactivated employees')
+
