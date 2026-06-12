@@ -61,10 +61,9 @@ c3GIS = GIS(profile='aolson_prfl2')
 
 # Define working directory
 working_dir = r'C:\Users\is_olson\Documents\Projects\SSO_Update'
-arcpy.env.workspace = working_dir
 
 # Output file: excel sheet containing all agol users with date stamp
-all_users_xlsx = f'all_agol_users_{mdyDT}.xlsx'
+all_users_xlsx = f'{working_dir}\\all_agol_users_{mdyDT}.xlsx'
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
