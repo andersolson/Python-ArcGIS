@@ -71,6 +71,9 @@ employee_status_report = f'{working_dir}\\City_users_positions_GIS_integration.c
 # Output: cleaned up excel version of david's report for reference, only active employees
 employee_status_xlsx = f'{working_dir}\\City_users_positions_GIS_integration.xlsx'
 
+# Output: joined report of matching active employees
+active_joined_report = f'{working_dir}\\joined_active_user_report.xlsx'
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
 # Start calling functions
@@ -114,7 +117,7 @@ df2 = pd.read_csv(employee_status_report)
 df2['[Email]'] = df2['[Email]'].str.lower()
 
 # Only active employees
-active_employees = df2[df2['[Status]'] == 'Active']
+active_employees = df2[df2['[Employee_Status]'] == 'Active']
 
 # Export dataframe back to excel for reference
 active_employees.to_excel(employee_status_xlsx, index=False)
@@ -123,3 +126,6 @@ active_employees.to_excel(employee_status_xlsx, index=False)
 # Join df and df2 using common email field
 merged = df.merge(active_employees, left_on='email', right_on='[Email]', how='left')
 outputMessage(f'Found {len(merged)} matching active employees')
+
+# Output active employee matches to excel sheet
+merged.to_excel(active_joined_report, index=False)
