@@ -12,7 +12,7 @@
 #
 #-------------------------------------------------------------------------------
 
-import arcgis
+import arcpy
 from arcgis.gis import GIS
 import pandas as pd
 from datetime import datetime as dt
@@ -55,9 +55,6 @@ runStart = dt.now()
 # Define string format for the start time
 dtStr = runStart.strftime('%Y-%m-%d %H:%M:%S')
 mdyDT = runStart.strftime('%Y%m%d')
-
-# Define the working environment
-arcpy.env.workspace = str(workingGDB)
 
 # Connect to ArcGIS Online
 c3GIS = GIS(profile='aolson_prfl2')
