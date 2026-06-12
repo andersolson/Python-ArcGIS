@@ -116,10 +116,7 @@ df['lastLogin'] = pd.to_datetime(df['lastLogin'], unit='ms')
 # Reformat email address case for joining
 df['email'] = df['email'].str.lower()
 
-# 2. Convert dataframe to excel sheet
-df.to_excel(all_users_xlsx, index=False)
-
-# 3. Convert city employee status report to dataframe
+# 2. Convert city employee status report into two dataframes, active & deactivated
 # Read David's report to a dataframe
 df2 = pd.read_csv(employee_status_report)
 
@@ -129,31 +126,22 @@ df2['[Email]'] = df2['[Email]'].str.lower()
 # Only active employees
 active_employees = df2[df2['[Employee_Status]'] == 'Active']
 
-# Export dataframe back to excel for reference
-active_employees.to_excel(employee_status_xlsx, index=False)
-
-# 4. Join dataframes on email
-# Join df and df2 using common email field
-merged = df.merge(active_employees, left_on='email', right_on='[Email]', how='left')
-outputMessage(f'Found {len(merged)} matching active employees')
-
-# Output active employee matches to excel sheet
-merged.to_excel(active_joined_report, index=False)
-
-# 5. Create a dataframe of terminated/retired/inactive employees
 # Only deactivated employees
 inactive_statuses = ['Terminated', 'Inactive', 'Retiree Gen', 'Retired']
 deactivated_employees = df2[df2['[Employee_Status]'].isin(inactive_statuses)]
 
-# Join df and df2 using common email field
-merged = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='left')
-outputMessage(f'Found {len(merged)} matching deactivated employees')
+# 3. Join dataframes on email df and df2 using common email field
+# AGOL match for active employees
+active_matched = df.merge(active_employees, left_on='email', right_on='[Email]', how='inner')
+outputMessage(f'Found {len(merged)} matching active employees')
 
-# Output active employee matches to excel sheet
-merged.to_excel(nonactive_joined_report, index=False)
+# Active employees NOT matched to any AGOL user
+active_unmatched = active_employees[~active_employees['[Email]'].isin(df['email'])]
 
-# 6. Write all three dataframes to a sheet in one excel file
+# Deactivated employees who STILL have AGOL accounts
+deactivated_with_accounts = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='inner')
 
+# 3. Write all three dataframes to a sheet in one excel file
 with pd.ExcelWriter(output_xlsx, engine='xlsxwriter') as writer:
     active_matched.to_excel(writer, sheet_name='Active_Matched', index=False)
     active_unmatched.to_excel(writer, sheet_name='Unmatched', index=False)
