@@ -77,6 +77,10 @@ active_joined_report = f'{working_dir}\\joined_active_user_report.xlsx'
 # Output: joined report of nonactive employees
 nonactive_joined_report = f'{working_dir}\\joined_nonactive_user_report.xlsx'
 
+# Make a single output file
+output_xlsx = f"{working_dir}\\agol_city_employee_match_report_{mdyDT}.xlsx"
+
+
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
 # Start calling functions
@@ -90,7 +94,7 @@ outputMessage(f'Running: {sys.argv[0]}\nStart Time: {dtStr}')
 all_users = c3GIS.users.search(query='*',max_users=666)
 outputMessage(f'Org has {len(all_users)} users')
 
-# 1. Convert user list to a pandas df
+# 1. Convert AGOL user list to pandas df
 # Start with a dictionary for the user data object from agol
 user_data = []
 for user in all_users:
@@ -108,6 +112,9 @@ df = pd.DataFrame(user_data)
 
 # Reformat the date from UNIX timestamp to readable text date
 df['lastLogin'] = pd.to_datetime(df['lastLogin'], unit='ms')
+
+# Reformat email address case for joining
+df['email'] = df['email'].str.lower()
 
 # 2. Convert dataframe to excel sheet
 df.to_excel(all_users_xlsx, index=False)
@@ -135,7 +142,8 @@ merged.to_excel(active_joined_report, index=False)
 
 # 5. Create a dataframe of terminated/retired/inactive employees
 # Only deactivated employees
-deactivated_employees = df2[df2['[Employee_Status]'].isin(['Terminated','Inactive','Retiree Gen'])]
+inactive_statuses = ['Terminated', 'Inactive', 'Retiree Gen', 'Retired']
+deactivated_employees = df2[df2['[Employee_Status]'].isin(inactive_statuses)]
 
 # Join df and df2 using common email field
 merged = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='left')
@@ -143,3 +151,12 @@ outputMessage(f'Found {len(merged)} matching deactivated employees')
 
 # Output active employee matches to excel sheet
 merged.to_excel(nonactive_joined_report, index=False)
+
+# 6. Write all three dataframes to a sheet in one excel file
+
+with pd.ExcelWriter(output_xlsx, engine='xlsxwriter') as writer:
+    active_matched.to_excel(writer, sheet_name='Active_Matched', index=False)
+    active_unmatched.to_excel(writer, sheet_name='Unmatched', index=False)
+    deactivated_with_accounts.to_excel(writer, sheet_name='Deactivated_With_Accounts', index=False)
+
+outputMessage("Report built successfully!")
