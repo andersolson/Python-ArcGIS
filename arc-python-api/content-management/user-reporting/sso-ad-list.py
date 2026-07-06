@@ -94,7 +94,7 @@ for user in all_users:
         formatted_name = user.fullName
 
     user_data.append({
-        "fullname": formatted_name,
+        "Full Name": formatted_name,
         "email": user.email
     })
 
@@ -102,6 +102,10 @@ for user in all_users:
 # Convert dictionary to a dataframe
 df = pd.DataFrame(user_data)
 
+# Select only rows where user has a city email address and make sure case-sensitive match is applied
+email_df = df[df["email"].str.lower().str.endswith("c3gov.com")]
+
+# Display header and top 5 records
 print(df.head())
 
 # # 2. Write the current dataframe to a csv file
