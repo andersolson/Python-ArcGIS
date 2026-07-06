@@ -36,14 +36,12 @@ print(len(itemsList))
 dfItems = pd.concat([pd.DataFrame([{'Title':i.title, 'Type':i.type, 'Size':i.size, 'Owner':i.owner,
                                     'Description':i.description, 'Tags':i.tags, 'Snippet':i.snippet,
                                     'Categories':i.categories, 'Access':i.access, 'URL':i.url,
-                                    'Shared With': i.shared_with} for i in itemsList])
-                     ]
-                    )
+                                    'Shared With': i.shared_with} for i in itemsList])])
 
 dfItems.reset_index(inplace=True, drop=True)
 
 # Write to a csv report
-csv = r'C:\Users\is_olson\Documents\Projects\ArcGIS-for-Server\UserReports\LongReport_050724.csv'
+csv = r'C:\Users\is_olson\Documents\Projects\ArcGIS-for-Server\UserReports\LongReport_070626.csv'
 # csv = r'C:\Users\is_olson\Documents\Projects\ArcGIS-for-Server\UserReports\ShortReport_050724.csv'
 myCSV = dfItems.to_csv(csv)
 
