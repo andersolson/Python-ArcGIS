@@ -1,3 +1,14 @@
+#-----------------------------------------------------------------------------
+# users-report.py
+#
+# Author: Anders Olson 2026
+#
+# Usage: Script is run as a stand-alone script
+#
+# Description: Script
+#
+#-------------------------------------------------------------------------------
+
 from datetime import datetime as dt
 import pandas as pd
 from arcgis.gis import GIS
