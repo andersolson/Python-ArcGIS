@@ -58,3 +58,23 @@ mdyDT = runStart.strftime('%Y%m%d')
 
 # Connect to ArcGIS Online
 c3GIS = GIS(profile='aolson_prfl2')
+
+# Define working directory
+working_dir = r'C:\Users\is_olson\Documents\Projects\SSO_Update\reports'
+
+# Make a single output file
+output_xlsx = f"{working_dir}\\list_of_city_users_{mdyDT}.xlsx"
+
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+# ================================#
+# Start calling functions
+# ================================#
+##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
+
+# Output running message and start time
+outputMessage(f'Running: {sys.argv[0]}\nStart Time: {dtStr}')
+
+# Get a list of all org users
+all_users = c3GIS.users.search(query='*',max_users=666)
+outputMessage(f'Org has {len(all_users)} users')
+
