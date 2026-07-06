@@ -105,11 +105,13 @@ df = pd.DataFrame(user_data)
 # Select only rows where user has a city email address and make sure case-sensitive match is applied
 email_df = df[df["email"].str.lower().str.endswith("c3gov.com")]
 
-# Display header and top 5 records
-print(df.head())
+# Display how many users fit the filter
+print(len(email_df))
 
-# # 2. Write the current dataframe to a csv file
-# with pd.CSVWriter(output_xlsx) as writer:
-#     active_matched.to_csv(writer, sheet_name='User_Account_Info', index=False)
+# Display header and top 5 records
+print(email_df.head())
+
+# 2. Write the current dataframe to a csv file
+email_df.to_csv(output_csv, index=False)
 
 
