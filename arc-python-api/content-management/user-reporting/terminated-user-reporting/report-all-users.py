@@ -5,7 +5,7 @@
 #
 # Usage: Script is run as a stand-alone script
 #
-# Description: Script pulls a list of all users found in organization. Then,
+# Description: Script pulls a list of all users found in AGOL organization. Then,
 #              creates a dataframe for the user data and a dataframe for David's
 #              city employee list. Dataframes are joined and a report of active and
 #              terminated users is created.
@@ -67,7 +67,6 @@ employee_status_report = f'{working_dir}\\City_users_positions_GIS_integration.c
 
 # Make a single output file
 output_xlsx = f"{working_dir}\\agol_city_employee_match_report_{mdyDT}.xlsx"
-
 
 ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
 # ================================#
@@ -136,5 +135,7 @@ with pd.ExcelWriter(output_xlsx) as writer:
     active_matched.to_excel(writer, sheet_name='Active_Matched', index=False)
     agol_unmatched.to_excel(writer, sheet_name='Unmatched', index=False)
     deactivated_with_accounts.to_excel(writer, sheet_name='Deactivated_With_Accounts', index=False)
+
+outputMessage(f"Excel report found here: {output_xlsx}")
 
 outputMessage("Report built successfully!")
