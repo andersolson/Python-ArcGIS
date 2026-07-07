@@ -81,8 +81,9 @@ outputMessage(f'Running: {sys.argv[0]}\nStart Time: {dtStr}')
 all_users = c3GIS.users.search(query='*',max_users=666)
 outputMessage(f'Org has {len(all_users)} users')
 
-# 1. Convert AGOL user list to pandas df
-# Start with a dictionary for the user data object from agol
+# 1. Convert AGOL user list to pandas df from a dictionary
+
+# Create a dictionary for the user data object from agol
 user_data = []
 for user in all_users:
     user_data.append({
@@ -104,6 +105,7 @@ df['lastLogin'] = pd.to_datetime(df['lastLogin'], unit='ms')
 df['email'] = df['email'].str.lower()
 
 # 2. Convert city employee status report into two dataframes, active & deactivated
+
 # Read David's report to a dataframe
 df2 = pd.read_csv(employee_status_report)
 
@@ -113,24 +115,35 @@ df2['[Email]'] = df2['[Email]'].str.lower()
 # Only active employees
 active_employees = df2[df2['[Employee_Status]'] == 'Active']
 
-# Only deactivated employees
+# Create dataframe of only deactivated employees
 inactive_statuses = ['Terminated', 'Inactive', 'Retiree Gen', 'Retired']
 deactivated_employees = df2[df2['[Employee_Status]'].isin(inactive_statuses)]
 
-# 3. Join dataframes on email df and df2 using common email field
-# AGOL match for active employees
+# 3. Join dataframes on email df and deactivated_employees using common email field
+
+# AGOL match for active employees, reliable dataframe of AGOL accounts tied to active City employees.
 active_matched = df.merge(active_employees, left_on='email', right_on='[Email]', how='inner')
 outputMessage(f'Found {len(active_matched)} matching active employees')
+
+# 4. Check that active user's email is not included in terminated report due to email reuse
+
+# New dataframe of emails that belong to active AGOL users
+active_emails = set(active_matched['email'])
 
 # Any AGOL user NOT matched to city employee report
 agol_unmatched = df[~df['email'].isin(df2['[Email]'])]
 outputMessage(f'Found {len(agol_unmatched)} unmatched AGOL users')
 
-# Deactivated employees who STILL have AGOL accounts
+# Deactivated employees who STILL have AGOL accounts, but might also include email that is also used by
+# an active employee.
 deactivated_with_accounts = df.merge(deactivated_employees, left_on='email', right_on='[Email]', how='inner')
 outputMessage(f'Found {len(deactivated_with_accounts)} deactivated AGOL users')
 
-# 3. Write all three dataframes to a sheet in one excel file
+# Remove cases where a "terminated" email is also present for an active employee due to reusing email address
+deactivated_with_accounts = deactivated_with_accounts[~deactivated_with_accounts['email'].isin(active_emails)]
+outputMessage(f'Found {len(deactivated_with_accounts)} deactivated AGOL users (after email reuse check)')
+
+# 5. Write all three dataframes to a sheet in one excel file
 with pd.ExcelWriter(output_xlsx) as writer:
     active_matched.to_excel(writer, sheet_name='Active_Matched', index=False)
     agol_unmatched.to_excel(writer, sheet_name='Unmatched', index=False)
