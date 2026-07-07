@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# report-all-users.py
+# active-users-report.py
 #
 # Author: Anders Olson 2026
 #
