@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="en"><Esri><CreaDate>20260824</CreaDate><CreaTime>16465500</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files\arcgis\pro\Resources\ArcToolbox\toolboxes\Conversion Tools.tbx\JSONToFeatures" Date="20260824" Time="164655">JSONToFeatures parcelsservice.json C:\Users\is_olson\Documents\Projects\GitHub\gis-prod-scripts\Parcels-QAQC\dev\Extract-REST\parcelservice.shp POLYGON</Process></lineage></DataProperties></Esri></metadata>
